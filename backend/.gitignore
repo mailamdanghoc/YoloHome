@@ -1,0 +1,6 @@
+# Output
+node_modules
+dist
+
+# IDE
+.vscode
