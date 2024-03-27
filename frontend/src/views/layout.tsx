@@ -7,7 +7,6 @@ const Layout = () => {
     <>
       <Header/>
       <Outlet/>
-      <h1>Edit views/App.tsx to begin!</h1>
     </>
   );
 };

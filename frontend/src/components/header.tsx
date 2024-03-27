@@ -2,7 +2,7 @@
 const Header = () => {
     return (
         <>
-            <div className="w-full h-[10%] flex  bg-black">
+            <div className="w-full h-[10%] flex  bg-white">
                 a
             </div>
         </>
