@@ -6,7 +6,10 @@ const Layout = () => {
   return (
     <>
       <Header/>
-      <Outlet/>
+      <div className="h-[90%] w-full">
+        <Navbar/>
+        <Outlet/>
+      </div>
     </>
   );
 };
