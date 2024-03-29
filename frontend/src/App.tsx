@@ -10,7 +10,7 @@ const App = () => {
                     <Route path="/signup" element={<div>Hello world from sign up</div>} />
                     <Route path="/signin" element={<div>Hello world from sign in</div>} />
                     <Route path="/" element={<Layout />}>
-                        <Route path="home" element={<ControlBoard />} />
+                        <Route path="devices" element={<ControlBoard />} />
                         <Route path="home1" element={<div>Home 2</div>} />
                         <Route index element={<div>Hello world</div>} />
                     </Route>

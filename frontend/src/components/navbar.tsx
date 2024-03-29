@@ -1,5 +1,6 @@
 import { NavLink } from "react-router-dom";
-import { ReactElement, useState } from "react";
+import { ReactElement, ReactNode, useState } from "react";
+import { BsCalendar3Event } from "react-icons/bs";
 import { DiApple } from "react-icons/di";
 
 interface NavbarComponent {
@@ -13,12 +14,12 @@ interface NavbarProps {
     handleNavbar: any
 }
 
-const Navbar = (props: NavbarProps) => {
+const Navbar = (props: NavbarProps): ReactNode => {
     const [navbarComponents, setNavbarComponents] = useState<NavbarComponent[]>([
         {
-            content: "Home",
-            link: "/home",
-            icon: <DiApple size={30} className="" />
+            content: "My Device",
+            link: "/devices",
+            icon: <BsCalendar3Event size={25}/>
         },
         {
             content: "Home1",
@@ -32,16 +33,16 @@ const Navbar = (props: NavbarProps) => {
             {
                 navbarComponents.map((navbarComponent: NavbarComponent): ReactElement => {
                     return (
-                        <div className="h-1/4 md:h-[15%] w-full flex border-b border-gray-300">
+                        <div key={navbarComponent.content} className="h-1/4 md:h-[15%] w-full flex border-b border-gray-300">
                             <NavLink className="h-full w-full flex items-center" to={navbarComponent.link} onClick={() => { props.handleNavbar() }}>
                                 {({ isActive }): ReactElement => (
                                     <>
-                                        <div className={`h-0 m-0 md:h-3/4 md:w-[2.5%] my-auto rounded-r-lg ${isActive ? "bg-blue-500" : "bg-white"}`} />
-                                        <div className={`w-full flex items-center text-2xl  ${props.isNavbarOpen ? `${isActive ? "text-blue-500" : "text-gray-500"}` : "text-transparent"}`}>
-                                            <div className={`w-2/5 md:1/4 flex justify-center `}>
+                                        <div className={`h-0 m-0 md:h-3/4 md:w-[2.5%] my-auto rounded-r-lg ${isActive ? "bg-cyan-500" : "bg-white"}`} />
+                                        <div className={`w-full flex items-center text-2xl md:text-xl lg:text-2xl hover:font-medium  ${props.isNavbarOpen ? `${isActive ? "text-cyan-500" : "text-gray-500"}` : "text-transparent"}`}>
+                                            <div className={`w-2/5 md:w-1/4 flex justify-center `}>
                                                 {navbarComponent.icon}
                                             </div>
-                                            <div className={`w-3/5 md:3/4 flex justify-start `}>
+                                            <div className={`w-3/5 md:w-3/4 flex justify-start `}>
                                                 {navbarComponent.content}
                                             </div>
                                         </div>

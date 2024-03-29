@@ -9,7 +9,7 @@
 
   height: 100vh;
 
-  background-color: #e0f2fe;
+  background: linear-gradient(to bottom right, #f0f9ff 60%, #bae6fd);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
