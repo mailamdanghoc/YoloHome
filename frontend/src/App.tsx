@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Layout from "./views/layout.tsx";
-import ControlBoard from "./components/controlBoard.tsx";
+import ControlBoard from "./views/controlBoard.tsx";
 
 const App = () => {
     return (

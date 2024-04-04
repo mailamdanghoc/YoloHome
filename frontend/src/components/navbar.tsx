@@ -11,7 +11,7 @@ interface NavbarComponent {
 
 interface NavbarProps {
     isNavbarOpen: boolean,
-    handleNavbar: any
+    handleNavbar: () => void
 }
 
 const Navbar = (props: NavbarProps): ReactNode => {
@@ -37,7 +37,9 @@ const Navbar = (props: NavbarProps): ReactNode => {
                             <NavLink className="h-full w-full flex items-center" to={navbarComponent.link} onClick={() => { props.handleNavbar() }}>
                                 {({ isActive }): ReactElement => (
                                     <>
-                                        <div className={`h-0 m-0 md:h-3/4 md:w-[2.5%] my-auto rounded-r-lg ${isActive ? "bg-cyan-500" : "bg-white"}`} />
+                                        <div className="h-0 w-0 md:h-3/4 md:w-[2.5%]">
+                                            <div className={`h-full my-auto rounded-r-lg bg-cyan-500 ${isActive ? "w-full" : "w-0"} transition-width duration-[0.25s] ease-in-out`}/>
+                                        </div>
                                         <div className={`w-full flex items-center text-2xl md:text-xl lg:text-2xl hover:font-medium  ${props.isNavbarOpen ? `${isActive ? "text-cyan-500" : "text-gray-500"}` : "text-transparent"}`}>
                                             <div className={`w-2/5 md:w-1/4 flex justify-center `}>
                                                 {navbarComponent.icon}
