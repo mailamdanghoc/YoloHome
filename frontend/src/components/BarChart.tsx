@@ -1,111 +1,95 @@
 import * as d3 from "d3";
 import { ReactNode, useRef, useEffect } from "react";
 
-const data = [
-    { "name": "1/3/2003", "value": 10 },
-    { "name": "2/3/3", "value": 12 },
-    { "name": "03/03", "value": 15 },
-    { "name": "4/3/3", "value": 19 },
-    { "name": "5/3/3", "value": 24 },
-    { "name": "6/3/3", "value": 13 },
-    { "name": "7/3/3", "value": 8 },
-
-]
-
 interface BarChartProps {
     height: number,
-    width: number
+    width: number,
+    barColor: string,
+    textStyle: string,
+    margin?: {
+        top?: number,
+        bottom?: number,
+        left?: number,
+        right?: number,
+    },
+    data: {
+        name: string,
+        value: number
+    }[]
 }
 
-const BarChart = (props: BarChartProps) => {
-    const { height, width } = props;
-    const marginTop = 10;
-    const marginBottom = 50;
-    const marginLeft = 10;
-    const marginRight = 10;
+const BarChart = (props: BarChartProps): ReactNode => {
+    const { height, width, barColor, textStyle, data} = props;
 
-    const anime = useRef(null);
+    const marginTop = props.margin ? (props.margin.top ? props.margin.top : 10) : 10;
+    const marginBottom = props.margin ? (props.margin.bottom ? props.margin.bottom : 10) : 10;
+    const marginLeft = props.margin ? (props.margin.left ? props.margin.left : 10) : 10;
+    const marginRight = props.margin ? (props.margin.right ? props.margin.right : 10) : 10;
+
+    const svgRef = useRef(null);
 
     useEffect(() => {
+        if(height == 0 || width == 0) {
+            console.log("initiate");
+            return;
+        }
 
-    }, [])
+        // set up xScale
+        const xScale = d3.scaleBand()
+            .domain(data.map((d) => d.name))
+            .range([marginLeft, width - marginRight])
+            .padding(0.1);
 
-    const xScale = d3.scaleBand()
-        .domain(data.map((d) => d.name))
-        .range([marginLeft, width - marginRight])
-        .padding(0.1);
+        //set up yScale
+        const yScale = d3.scaleLinear()
+            .domain([0, 24])
+            .range([height - marginBottom, marginTop]);
 
-    const yScale = d3.scaleLinear()
-        .domain([0, 24])
-        .range([height - marginBottom, marginTop]);
+        // check Ref, if component is mounted then render data
+        if(svgRef.current) {
+            const svg = d3.select(svgRef.current);            
 
-    const Bar: ReactNode = data.map((d, i) => {
-        const x = xScale(d.name);
-        if (x === undefined) return null;
+            svg.selectAll("rect")
+                .data(data)
+                .enter()
+                .append("rect")
+                    .attr("x", (d) => xScale(d.name)!)
+                    .attr("y", (d) => yScale(0))
+                    .attr("height", (d) => height - marginBottom - yScale(0))
+                    .attr("width", (d) => xScale.bandwidth())
+                    .attr("rx", "15")
+                    .attr("class", barColor)
+                    .transition()
+                    .duration(800)
+                    .attr("height", (d) => height - marginBottom - yScale(d.value))
+                    .attr("y", (d) => yScale(d.value));
 
-        return (
-            <g key={i}>
-                <rect
-                    x={xScale(d.name)}
-                    y={yScale(d.value)}
-                    width={(width - marginLeft - marginRight) / 7.5}
-                    height={height - marginBottom - yScale(d.value)}
-                    fill="#787878"
-                    rx={5}
-                    ref={anime}
-                >
-                </rect>
-            </g>
-        )
-    })
+            //attach xAxis
+            svg.append("g")
+                .attr("transform", "translate(0," + (height - marginBottom) + ")")
+                .call(d3.axisBottom(xScale))
+                .style("text-anchor", "center")
+                .attr("class", textStyle)
+                
+            //attach yAxis    
+            svg.append("g")
+                .attr("transform", "translate(" + (marginLeft) + ", 0)")
+                .call(d3.axisLeft(yScale).ticks(5))
+                .style("text-anchor", "middle")
+                .attr("class", textStyle)
 
-    const yAxis = yScale
-        .ticks(6)
-        .splice(1)
-        .map((value, i) => {
-            return (
-                <g key={i}>
-                    <text
-                        y={yScale(value)}
-                        x={marginLeft}
-                        textAnchor="middle"
-                    >
-                        {value}
-                    </text>
-                </g>
-            )
-        })
+            //remove line
+            svg.selectAll("path,line").remove();        
 
-    const xAxis = xScale
-        .domain()
-        .map((value, i) => {
-            const x = xScale(value);
-            if (x === undefined) return null;
-
-            console.log(value);
-            return (
-                <g key={i}>
-                    <text
-                        y={height - marginBottom + 20}
-                        x={x + ((width - marginLeft - marginRight) / 7.5) / 2}
-                        textAnchor="middle"
-                    >
-                        {value}
-                    </text>
-                </g>
-            )
-        })
-
-
-
+            //when component unmounts, it will remove all objects thus no object will be duplicated
+            return () => {
+                svg.selectAll('*').remove()
+            }
+        }
+    }, [height, width, data])
+    
     return (
-        <svg width={width} height={height}>
-            <g width={width - marginLeft - marginRight} height={height - marginBottom - marginTop}>
-                {yAxis}
-                {xAxis}
-                {Bar}
-            </g>
-        </svg>
+        <svg width={width} height={height} ref={svgRef}></svg>
     )
 }
 
