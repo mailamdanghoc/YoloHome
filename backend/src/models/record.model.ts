@@ -24,6 +24,7 @@ interface LightRecord extends Record {
 
 interface FanRecord extends Record {
   speed: number;
+  controlType: ControlType;
 }
 
 interface LedRecord extends Record {
@@ -90,6 +91,11 @@ const FanRecordModel = RecordModel.discriminator(
       type: Number,
       required: true,
     },
+    controlType: {
+      type: String,
+      required: true,
+      default: ControlType.MANUAL,
+    },
   })
 );
 
@@ -103,6 +109,7 @@ const LedRecordModel = RecordModel.discriminator(
     controlType: {
       type: String,
       required: true,
+      default: ControlType.MANUAL,
     },
     description: {
       type: String,
