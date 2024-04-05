@@ -1,7 +1,7 @@
 import IContext from "./context";
 
 interface Subscriber {
-  name: string;
+  readonly name: string;
 
   update: (context: IContext) => void;
 }
