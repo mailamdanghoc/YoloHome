@@ -9,18 +9,19 @@ import connectDB from "./config/db";
 
 // Import routes
 import ledRoute from "./routes/led.route";
+import fanRoute from "./routes/fan.route";
 
 // App setup
 const port = process.env.BACKEND_PORT || 3001;
 const corsOptions = {
-  origin: process.env.FRONTEND_URL,
+  origin: process.env.FRONTEND_URL || "",
 };
 
 const app = express();
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
-    origin: process.env.FRONTEND_URL,
+    origin: process.env.FRONTEND_URL || "",
   },
 });
 
@@ -35,6 +36,7 @@ app.use(cors(corsOptions));
 
 // Binding routes
 app.use("/api/v1/led", ledRoute);
+app.use("/api/v1/fan", fanRoute);
 
 // Default error handler
 app.use(
