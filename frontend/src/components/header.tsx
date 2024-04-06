@@ -9,6 +9,7 @@ interface HeaderProps {
 
 const Header = (props: HeaderProps): ReactNode => {
 
+    
     return (
         <>
             <div className="w-full h-[10%] flex justify-between bg-white border-b-2 border-gray-300">
@@ -17,7 +18,7 @@ const Header = (props: HeaderProps): ReactNode => {
                     props.isMobile ? 
                     <div onClick={() => { props.handleNavbar()}}>Open</div> 
                     : <div className="md:w-full h-full flex items-center justify-center">
-                        <Logo/>
+                        <Logo size={1}/>
                     </div>
                     }
                     <div className="mx-6">{props.title}</div></div>
