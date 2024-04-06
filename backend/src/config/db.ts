@@ -7,7 +7,7 @@ async function connectDB() {
     await connect(uri);
     console.log("Database connected successfully!");
   } catch (err) {
-    console.error(err);
+    console.error("Database error: ", err);
   }
 }
 

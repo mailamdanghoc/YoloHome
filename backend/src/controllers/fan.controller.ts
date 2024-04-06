@@ -3,11 +3,11 @@ import Subscriber from "../utils/subscriber";
 import IContext from "../utils/context";
 import { ADAFRUIT_IO_FEEDS } from "../config/adafruit";
 import { Request, Response } from "express";
-import { ControlType, LedRecordModel } from "../models/record.model";
+import { ControlType, FanRecordModel } from "../models/record.model";
 
-export class LedController implements Subscriber {
+export class FanController implements Subscriber {
   private mqttService: MQTTService;
-  readonly name = ADAFRUIT_IO_FEEDS + "led";
+  readonly name = ADAFRUIT_IO_FEEDS + "fan";
 
   constructor() {
     this.mqttService = MQTTService.getInstance();
@@ -16,22 +16,29 @@ export class LedController implements Subscriber {
   }
 
   async update(context: IContext) {
-    // io.emit("led", context)
-    await LedRecordModel.create({
-      status: context.payload === "1",
+    // io.emit("fan", context)
+    await FanRecordModel.create({
+      speed: parseInt(context.payload),
       controlType: ControlType.MANUAL,
-      description: `LED was turned ${context.payload === "1" ? "on" : "off"}`,
     });
   }
 
-  turnon(req: Request, res: Response) {
-    this.mqttService.sendMessage(this.name, "1");
-    res.json({ message: "LED has been turned on successfully." });
-  }
+  control(req: Request, res: Response) {
+    const speed: string = req.body.speed;
+    const speedInt = parseInt(req.body.speed);
 
-  turnoff(req: Request, res: Response) {
-    this.mqttService.sendMessage(this.name, "0");
-    res.json({ message: "LED has been turned off successfully." });
+    if (typeof speed === "undefined") {
+      return res.status(400).json({ message: "No fan speed number provided." });
+    }
+
+    if (Number.isNaN(speedInt) || speedInt < 0 || speedInt > 100) {
+      return res.status(400).json({ message: "Invalid fan speed number." });
+    }
+
+    this.mqttService.sendMessage(this.name, speed);
+    res.json({
+      message: `Fan has been adjusted at speed ${speed} successfully.`,
+    });
   }
 
   async find(req: Request, res: Response) {
@@ -45,7 +52,7 @@ export class LedController implements Subscriber {
       dateOption["$lte"] = new Date(req.body.endDate);
     }
 
-    const query = LedRecordModel.find(
+    const query = FanRecordModel.find(
       Object.keys(dateOption).length === 0 && dateOption.constructor === Object
         ? {}
         : { timestamp: dateOption }
@@ -62,4 +69,4 @@ export class LedController implements Subscriber {
   }
 }
 
-export default new LedController();
+export default new FanController();
