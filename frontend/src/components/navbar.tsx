@@ -29,7 +29,7 @@ const Navbar = (props: NavbarProps): ReactNode => {
     ])
 
     return (
-        <div className={`w-full ${props.isNavbarOpen ? "h-40" : "h-0"} md:h-full md:w-1/5 bg-white duration-[0.25s] transition-height ease-in-out`}>
+        <div className={`w-full ${props.isNavbarOpen ? "h-40" : "h-0"} md:h-full md:w-1/6 bg-white duration-[0.25s] transition-height ease-in-out`}>
             {
                 navbarComponents.map((navbarComponent: NavbarComponent): ReactElement => {
                     return (

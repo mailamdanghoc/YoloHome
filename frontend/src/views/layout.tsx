@@ -23,7 +23,9 @@ const Layout = (): ReactNode => {
       <Header isMobile={isMobile} handleNavbar={handleNavbar} title={title}/>
       <div className={`h-[90%] w-full ${isMobile ? "" : "flex"}`}>
         <Navbar isNavbarOpen={isMobile ? isNavbarOpen : true} handleNavbar={handleNavbar}/>
-        <Outlet/>
+        <div className="h-full w-full md:w-5/6">
+          <Outlet/>
+        </div>
       </div>
     </>
   );

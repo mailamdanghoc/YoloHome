@@ -1,7 +1,7 @@
 import { ReactNode, useRef, useState } from "react";
-import useCheckMobile from "../customizes/useCheckMobile";
-import useDimensions from "../customizes/useDimensions";
-import BarChart from "./BarChart";
+import useCheckMobile from "../../customizes/useCheckMobile";
+import useDimensions from "../../customizes/useDimensions";
+import BarChart from "../BarChart";
 
 const data1 = [
     { "name": "1/3/2003", "value": 10 },
