@@ -1,19 +1,13 @@
 import express from "express";
-const route = express.Router();
+const router = express.Router();
 
 import ledController from "../controllers/led.controller";
 
-route.get("/", ledController.find);
-route.get(
-  "/newest",
-  (req, res, next) => {
-    req.query.limit = "1";
-    next();
-  },
-  ledController.find
-);
+router.get("/", ledController.find);
+router.get("/newest", ledController.findNewest.bind(ledController));
+router.get("/usage", ledController.getUsedTimeByInterval.bind(ledController));
 
-route.post("/turnon", ledController.turnon.bind(ledController));
-route.post("/turnoff", ledController.turnoff.bind(ledController));
+router.post("/turnon", ledController.turnon.bind(ledController));
+router.post("/turnoff", ledController.turnoff.bind(ledController));
 
-export default route;
+export default router;

@@ -1,18 +1,12 @@
 import express from "express";
-const route = express.Router();
+const router = express.Router();
 
 import fanController from "../controllers/fan.controller";
 
-route.get("/", fanController.find);
-route.get(
-  "/newest",
-  (req, res, next) => {
-    req.query.limit = "1";
-    next();
-  },
-  fanController.find
-);
+router.get("/", fanController.find);
+router.get("/newest", fanController.findNewest.bind(fanController));
+router.get("/usage", fanController.getUsedTimeByInterval.bind(fanController));
 
-route.post("/control", fanController.control.bind(fanController));
+router.post("/control", fanController.control.bind(fanController));
 
-export default route;
+export default router;
