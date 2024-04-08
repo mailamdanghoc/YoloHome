@@ -27,22 +27,22 @@ const deviceSchema = new Schema<Device>(
   }
 );
 
-const DeviceModel = model("Device", deviceSchema);
+const DeviceModel = model<Device>("Device", deviceSchema);
 
-const TemperatureSensorModel = DeviceModel.discriminator(
+const TemperatureSensorModel = DeviceModel.discriminator<TemperatureSensor>(
   "TemperatureSensor",
   new Schema<TemperatureSensor>({})
 );
-const HumiditySensorModel = DeviceModel.discriminator(
+const HumiditySensorModel = DeviceModel.discriminator<HumiditySensor>(
   "HumiditySensor",
   new Schema<HumiditySensor>({})
 );
-const LightSensorModel = DeviceModel.discriminator(
+const LightSensorModel = DeviceModel.discriminator<LightSensor>(
   "LightSensor",
   new Schema<LightSensor>({})
 );
-const FanModel = DeviceModel.discriminator("Fan", new Schema<Fan>({}));
-const LedModel = DeviceModel.discriminator("Led", new Schema<Led>({}));
+const FanModel = DeviceModel.discriminator<Fan>("Fan", new Schema<Fan>({}));
+const LedModel = DeviceModel.discriminator<Led>("Led", new Schema<Led>({}));
 
 export {
   DeviceModel,

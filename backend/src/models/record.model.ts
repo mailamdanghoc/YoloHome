@@ -25,19 +25,21 @@ interface LightRecord extends Record {
 interface FanRecord extends Record {
   speed: number;
   controlType: ControlType;
+  totalTime?: number;
 }
 
 interface LedRecord extends Record {
   status: boolean;
   controlType: ControlType;
   description: string;
+  totalTime?: number;
 }
 
 const recordSchema = new Schema<Record>(
   {
     timestamp: {
       type: Date,
-      default: () => Date.now(), // Can also be `Date.now`, I am using explicit callback for clarity purpose
+      default: Date.now,
       required: true,
       immutable: true,
     },
@@ -52,9 +54,9 @@ const recordSchema = new Schema<Record>(
   }
 );
 
-const RecordModel = model("Record", recordSchema);
+const RecordModel = model<Record>("Record", recordSchema);
 
-const TemperatureRecordModel = RecordModel.discriminator(
+const TemperatureRecordModel = RecordModel.discriminator<TemperatureRecord>(
   "TemperatureRecord",
   new Schema<TemperatureRecord>({
     temperature: {
@@ -64,7 +66,7 @@ const TemperatureRecordModel = RecordModel.discriminator(
   })
 );
 
-const HumidityRecordModel = RecordModel.discriminator(
+const HumidityRecordModel = RecordModel.discriminator<HumidityRecord>(
   "HumidityRecord",
   new Schema<HumidityRecord>({
     humidity: {
@@ -74,7 +76,7 @@ const HumidityRecordModel = RecordModel.discriminator(
   })
 );
 
-const LightRecordModel = RecordModel.discriminator(
+const LightRecordModel = RecordModel.discriminator<LightRecord>(
   "LightRecord",
   new Schema<LightRecord>({
     lightLevel: {
@@ -84,7 +86,7 @@ const LightRecordModel = RecordModel.discriminator(
   })
 );
 
-const FanRecordModel = RecordModel.discriminator(
+const FanRecordModel = RecordModel.discriminator<FanRecord>(
   "FanRecord",
   new Schema<FanRecord>({
     speed: {
@@ -96,10 +98,13 @@ const FanRecordModel = RecordModel.discriminator(
       required: true,
       default: ControlType.MANUAL,
     },
+    totalTime: {
+      type: Number,
+    },
   })
 );
 
-const LedRecordModel = RecordModel.discriminator(
+const LedRecordModel = RecordModel.discriminator<LedRecord>(
   "LedRecord",
   new Schema<LedRecord>({
     status: {
@@ -114,6 +119,9 @@ const LedRecordModel = RecordModel.discriminator(
     description: {
       type: String,
       required: true,
+    },
+    totalTime: {
+      type: Number,
     },
   })
 );
