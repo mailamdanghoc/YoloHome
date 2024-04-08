@@ -22,8 +22,8 @@ const Navbar = (props: NavbarProps): ReactNode => {
             icon: <BsCalendar3Event size={25}/>
         },
         {
-            content: "Home1",
-            link: "/home1",
+            content: "Environment",
+            link: "/environment",
             icon: <DiApple size={30} />
         }
     ])

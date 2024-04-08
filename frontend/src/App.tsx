@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Layout from "./views/layout.tsx";
 import ControlBoard from "./views/controlBoard.tsx";
 import SignIn from "./views/signIn.tsx";
+import Environment from "./views/environmentScreen.tsx";
 
 const App = () => {
     return (
@@ -12,7 +13,7 @@ const App = () => {
                     <Route path="/signin" element={<SignIn/>} />
                     <Route path="/" element={<Layout />}>
                         <Route path="devices" element={<ControlBoard />} />
-                        <Route path="home1" element={<div>Home 2</div>} />
+                        <Route path="environment" element={<Environment/>} />
                         <Route index element={<div>Hello world</div>} />
                     </Route>
                 </Routes>
