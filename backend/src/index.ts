@@ -33,12 +33,12 @@ app.use(cors(corsOptions));
 // Import routes
 import ledRoute from "./routes/led.route";
 import fanRoute from "./routes/fan.route";
-// import lightRoute from "./routes/light.route";
+import lightRoute from "./routes/light.route";
 
 // Binding routes
 app.use("/api/v1/led", ledRoute);
 app.use("/api/v1/fan", fanRoute);
-// app.use("/api/v1/light", lightRoute);
+app.use("/api/v1/light", lightRoute);
 
 // Default error handler
 app.use(
