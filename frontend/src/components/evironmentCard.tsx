@@ -30,7 +30,7 @@ const EnvCard = ({ name, color, className, icon, curVal, limit} : EnvCardProps):
             <div className="mt-2 flex items-center justify-around">
                 <Icon color={color} className={className}/>
                 <div className="w-14 h-14">
-                    <CircularProgressbar strokeWidth={12} value={percentage} text={`${percentage}${unitStr}`} />
+                    <CircularProgressbar strokeWidth={12} value={percentage} text={`${curVal}${unitStr}`} />
                 </div>
                 {/* <div className="bg-slate-400 w-14 h-14 rounded-full flex items-center justify-center">
                 </div> */}
