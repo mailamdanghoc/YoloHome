@@ -1,25 +1,28 @@
 import * as d3 from "d3";
-import { ReactNode, useRef, useEffect } from "react";
+import { useRef, useEffect, ReactElement } from "react";
 
-/*
-    Description for Son, if you want to reuse this component:
-    * Component co 3 props quan trong nhat:
-    *** height: chieu cao cua do thi 
-    *** width: do rong cua do thi
-    *** data: [object] , object{name, value} => ve do thi 2 chieu
-
-    * Cac props khacL
-    *** barColor(optional): mau cua do thi, viet bang tailwind
-    *** textStyle: style cua chu cua truc x va truc y, viet bang tailwind
-    *** margin: margin cua do thi, mac dinh {10, 10, 10, 10}
-
-    * ComponentDidUpdate: Do thi se update khi co su thay doi cua 3 cai props quan trong o tren
-    * Responsiveness: Neu muon do thi responsive thi phai thay doi thuoc tinh cua height va width, noi cach khac
-    *   la doi thuoc tinh cua <parent> cua component nay, su dung useRef => gan cai ref vo parent => roi pass ref 
-    *   vo cai hook useDimension(import tu folder customizes) => pass width, height cho do thi. 
-    *   Xem vi du tu ./controlBoardChart.tsx
-
-*/
+/** Customize BarChart
+ * 
+ *  * Props List:
+ *  - height, width:    Outer height and width of the Bar chart
+ *  - barColor:         Color of the bars in Bar chart; written in class, so that you can use with either Bootstraps or Tailwind CSS
+ *  - textStyle:        Style of text displayed in axes; written in class, so that you can use with either Bootstraps or Tailwind CSS
+ *  - margin:           Margin for the inner Bar chart; optional (recommended to modify)
+ *  - data:             Data used to draw the Bar Chart, it's two-dimensional, so any data with a format {name, value} will work; array 
+ * 
+ *  * Rerender:
+ *  - BarChart will rerender when there're some changes in height, width or data
+ * 
+ *  * Other:
+ *  - Duration of animation when render is 150 (0.15 seconds) 
+ *  - xAxis, when there're more than 20 bars, it'll not display (see line 90)
+ *  - yAxis, only display 5 values (see line 99)
+ *  - when component unmounts, it'll remove all it's child element so there would be no duplicates
+ *  - All lines of axes're removed during render (see line 105)
+ * 
+ *  *** Feel free to use or modify 
+ *  *** Happy coding!!!
+ */
 
 interface BarChartProps {
     height: number,
@@ -38,7 +41,7 @@ interface BarChartProps {
     }[]
 }
 
-const BarChart = (props: BarChartProps): ReactNode => {
+const BarChart = (props: BarChartProps): ReactElement => {
     const { height, width, barColor, textStyle, data} = props;
 
     const marginTop = props.margin ? (props.margin.top ? props.margin.top : 10) : 10;
@@ -82,7 +85,7 @@ const BarChart = (props: BarChartProps): ReactNode => {
                     .attr("rx", xScale.domain().length > 20 ? "5" : "15")
                     .attr("class", barColor ? barColor : "fill-gray-500")
                     .transition()
-                    .duration(800)
+                    .duration(150)
                     .attr("height", (d) => height - marginBottom - yScale(d.value))
                     .attr("y", (d) => yScale(d.value));
 
