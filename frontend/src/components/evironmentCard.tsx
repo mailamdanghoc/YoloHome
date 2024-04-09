@@ -22,7 +22,7 @@ const EnvCard = ({ name, color, className, icon, curVal, limit} : EnvCardProps):
     }
     const Icon = IconComponents[icon];
     const percentage = curVal / limit * 100;
-    const unitStr = icon === "temp" ? "C" : "cd";
+    const unitStr = icon === "temp" ? "C" : "lux";
 
     return (
         <div className="bg-white w-2/5 rounded-2xl p-4 mt-4" >
