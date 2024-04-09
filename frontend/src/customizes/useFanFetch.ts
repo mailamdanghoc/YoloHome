@@ -11,8 +11,8 @@ const defaultRefreshInterval: number = 1000;    //1 second
 const useFanFetch = () => {
     const fetcher = async (url: string) => {
         const res = await axios.get(url);
-        console.log(res.data.data[0]);
-        return res.data.data[0];
+        console.log(res.data.data);
+        return res.data.data;
     }
 
     const {data, mutate, isValidating} = useSWR(fanNewest, fetcher,

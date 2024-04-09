@@ -12,7 +12,7 @@ const defaultRefreshInterval: number = 1000;    //1 second
 const useLedFetch = () => {
     const lightButtonFetcher = async (url: string): Promise<any> => {
         const res = await axios.get(url);
-        return res.data.data[0];
+        return res.data.data;
     };
 
     const {data, mutate, isValidating} = useSWR(ledNewest, lightButtonFetcher,

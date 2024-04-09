@@ -1,8 +1,9 @@
 import MQTTService from "../services/mqtt.service";
 import Subscriber from "../utils/subscriber";
 import IContext from "../utils/context";
+import { CustomError } from "../utils/error";
 import { ADAFRUIT_IO_FEEDS } from "../config/adafruit";
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { ControlType, LedRecordModel } from "../models/record.model";
 import { PipelineStage } from "mongoose";
 
@@ -131,51 +132,93 @@ export class LedController implements Subscriber {
     this.state = false;
   }
 
-  async find(req: Request, res: Response) {
-    const limit = req.query.limit;
+  async find(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { limit, startDate, endDate } = req.query;
 
-    const dateOption = {};
-    if (req.body.startDate) {
-      dateOption["$gte"] = new Date(req.body.startDate);
+      const dateOption = {};
+      if (startDate !== undefined) {
+        const d = new Date(startDate.toString());
+        if (isNaN(Number(d))) {
+          throw new CustomError("Invalid startDate.", 400);
+        }
+        dateOption["$gte"] = d;
+      }
+      if (endDate !== undefined) {
+        const d = new Date(endDate.toString());
+        if (isNaN(Number(d))) {
+          throw new CustomError("Invalid endDate.", 400);
+        }
+        dateOption["$lte"] = d;
+      }
+
+      const query = LedRecordModel.find(
+        startDate === undefined && endDate === undefined
+          ? {}
+          : { timestamp: dateOption }
+      ).sort({
+        timestamp: -1,
+      });
+
+      if (limit !== undefined) {
+        const limitInt = Number(limit.toString());
+        if (!Number.isInteger(limitInt)) {
+          throw new CustomError("Limit must be an integer.", 400);
+        }
+        query.limit(limitInt);
+      }
+
+      const data = await query.exec();
+      res.json({ data: data });
+    } catch (err) {
+      next(err);
     }
-    if (req.body.endDate) {
-      dateOption["$lte"] = new Date(req.body.endDate);
-    }
-
-    const query = LedRecordModel.find(
-      Object.keys(dateOption).length === 0 && dateOption.constructor === Object
-        ? {}
-        : { timestamp: dateOption }
-    ).sort({
-      timestamp: -1,
-    });
-
-    if (limit !== undefined) {
-      query.limit(parseInt(limit.toString()));
-    }
-
-    const data = await query.exec();
-    res.json({ data: data });
   }
 
   async findNewest(req: Request, res: Response) {
     res.json({ data: await this.getNewestDataPoint() });
   }
 
-  async getUsedTimeByInterval(req: Request, res: Response) {
-    const startDate = req.body.startDate
-      ? new Date(req.body.startDate)
-      : undefined;
-    const endDate = req.body.endDate ? new Date(req.body.endDate) : undefined;
-    const intervalType = ["day", "month", "year"].includes(
-      req.body.intervalType
-    )
-      ? req.body.intervalType
-      : "day";
+  async getUsedTimeByInterval(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { startDate, endDate, intervalType } = req.query;
 
-    const data = await this.getSumOnInterval(startDate, endDate, intervalType);
+      let d1: Date | undefined = undefined;
+      let d2: Date | undefined = undefined;
+      let type: "day" | "month" | "year";
 
-    res.json({ data: data });
+      if (startDate !== undefined) {
+        const d = new Date(startDate.toString());
+        if (isNaN(Number(d))) {
+          throw new CustomError("Invalid startDate.", 400);
+        }
+        d1 = d;
+      }
+      if (endDate !== undefined) {
+        const d = new Date(endDate.toString());
+        if (isNaN(Number(d))) {
+          throw new CustomError("Invalid endDate.", 400);
+        }
+        d2 = d;
+      }
+      if (intervalType !== undefined) {
+        const tmp = intervalType.toString();
+        switch (tmp) {
+          case "day":
+          case "month":
+          case "year":
+            type = tmp;
+            break;
+          default:
+            throw new CustomError("Invalid intervalType.", 400);
+        }
+      }
+
+      const data = await this.getSumOnInterval(d1, d2, type);
+      res.json({ data: data });
+    } catch (err) {
+      next(err);
+    }
   }
 }
 
