@@ -1,9 +1,15 @@
-import { ReactNode, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import ControlBoardChart from "../components/controlBoard/controlBoardChart";
 import LedButton from "../components/controlBoard/ledButton";
 import FanButton from "../components/controlBoard/fanButton";
+import { useOutletContext } from "react-router-dom";
 
-const ControlBoard = (props: any): ReactNode => {
+const ControlBoard = (): ReactNode => {
+    const handleSetTitle = useOutletContext<(title: string) => void>();
+
+    useEffect(() => {
+        handleSetTitle("My Devices")
+    },[]);
 
     return (
         <div className=" h-full w-full p-3 border-l overscroll-auto border-gray-300" >

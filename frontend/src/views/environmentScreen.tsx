@@ -1,6 +1,7 @@
-import { ReactNode } from 'react';
+import { ReactNode, useEffect } from 'react';
 import EnvCard from '../components/evironmentCard';
 import BarChart from '../components/BarChart';
+import { useOutletContext } from 'react-router-dom';
 
 const data1 = [
     { "name": "1/3/2003", "value": 10 },
@@ -12,7 +13,13 @@ const data1 = [
     { "name": "7/3/3", "value": 8 },
 ]
 
-const Environment = (props: any): ReactNode => {
+const Environment = (): ReactNode => {
+    const handleSetTitle = useOutletContext<(title: string) => void>();
+    
+    useEffect(() => {
+        handleSetTitle("Environment")
+    },[]);
+    
     return (
         <div className=" h-full w-full p-8" >
             <span className='text-2xl font-bold'>Live tempurature chart</span>
