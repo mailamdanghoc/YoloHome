@@ -25,7 +25,7 @@ export class LightController implements Subscriber {
     this.io.emit("light", context.payload);
 
     await LightRecordModel.create({
-      lightLevel: parseInt(context.payload),
+      lightLevel: Number(context.payload),
     });
   }
 
