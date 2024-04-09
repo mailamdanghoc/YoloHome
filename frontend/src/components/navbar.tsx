@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { ReactElement, ReactNode, useState } from "react";
+import { ReactElement, ReactNode, useState ,useEffect } from "react";
 import { BsCalendar3Event } from "react-icons/bs";
 import { DiApple } from "react-icons/di";
 
@@ -11,7 +11,8 @@ interface NavbarComponent {
 
 interface NavbarProps {
     isNavbarOpen: boolean,
-    handleNavbar: () => void
+    handleNavbar: () => void,
+    setTitle: (newTitle: string) => void
 }
 
 const Navbar = (props: NavbarProps): ReactNode => {
@@ -26,7 +27,7 @@ const Navbar = (props: NavbarProps): ReactNode => {
             link: "/environment",
             icon: <DiApple size={30} />
         }
-    ])
+    ]);
 
     return (
         <div className={`w-full ${props.isNavbarOpen ? "h-40" : "h-0"} md:h-full md:w-1/6 bg-white duration-[0.25s] transition-height ease-in-out`}>
@@ -34,8 +35,10 @@ const Navbar = (props: NavbarProps): ReactNode => {
                 navbarComponents.map((navbarComponent: NavbarComponent): ReactElement => {
                     return (
                         <div key={navbarComponent.content} className="h-1/4 md:h-[15%] w-full flex border-b border-gray-300">
-                            <NavLink className="h-full w-full flex items-center" to={navbarComponent.link} onClick={() => { props.handleNavbar() }}>
-                                {({ isActive }): ReactElement => (
+                            <NavLink className="h-full w-full flex items-center" to={navbarComponent.link}
+                                onClick={() => { props.handleNavbar() }} >
+                                {({ isActive }): ReactNode => {
+                                    return (
                                     <>
                                         <div className="h-0 w-0 md:h-3/4 md:w-[2.5%]">
                                             <div className={`h-full my-auto rounded-r-lg bg-cyan-500 ${isActive ? "w-full" : "w-0"} transition-width duration-[0.25s] ease-in-out`}/>
@@ -49,8 +52,8 @@ const Navbar = (props: NavbarProps): ReactNode => {
                                             </div>
                                         </div>
                                     </>
-                                )}
-
+                                )
+                                }}
                             </NavLink>
                         </div>
                     )
