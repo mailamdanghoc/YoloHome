@@ -22,7 +22,7 @@ const EnvCard = ({ name, color, className, icon, curVal, limit} : EnvCardProps):
     }
     const Icon = IconComponents[icon];
     const percentage = curVal / limit * 100;
-    const unitStr = icon === "temp" ? "C" : "lux";
+    const unitStr = icon === "humid" ? "%" : " lux";
 
     return (
         <div className="bg-white w-2/5 rounded-2xl p-4 mt-4" >
@@ -32,8 +32,6 @@ const EnvCard = ({ name, color, className, icon, curVal, limit} : EnvCardProps):
                 <div className="w-14 h-14">
                     <CircularProgressbar strokeWidth={12} value={percentage} text={`${curVal}${unitStr}`} />
                 </div>
-                {/* <div className="bg-slate-400 w-14 h-14 rounded-full flex items-center justify-center">
-                </div> */}
             </div>
         </div>
     )
