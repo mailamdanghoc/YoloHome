@@ -3,6 +3,7 @@ import EnvCard from '../components/evironmentCard';
 import BarChart from '../components/BarChart';
 import useSocket from '../customizes/useSocket';
 import axios from 'axios';
+import { useOutletContext } from 'react-router-dom';
 
 const data1 = [
     { "name": "1/3/2003", "value": 10 },
@@ -18,6 +19,7 @@ const Environment = (props: any): ReactNode => {
     const [light, setLight] = useState(0);
     const socket = useSocket;
     const [graphData, setGraphData] = useState(data1);
+    const handleSetTitle = useOutletContext<(title: string) => void>();
 
     useEffect(() => {
         socket.on("light", (data: string) => {
@@ -35,6 +37,10 @@ const Environment = (props: any): ReactNode => {
         //         });
         // }, 60000);
     }, [socket]);
+      
+    useEffect(() => {
+        handleSetTitle("Environment")
+    },[]);
 
     return (
         <div className=" h-full w-full p-8" >

@@ -3,6 +3,7 @@ import Layout from "./views/layout.tsx";
 import ControlBoard from "./views/controlBoard.tsx";
 import SignIn from "./views/signIn.tsx";
 import Environment from "./views/environmentScreen.tsx";
+import User from "./views/user.tsx";
 
 const App = () => {
     return (
@@ -14,6 +15,7 @@ const App = () => {
                     <Route path="/" element={<Layout />}>
                         <Route path="devices" element={<ControlBoard />} />
                         <Route path="environment" element={<Environment/>} />
+                        <Route path="user" element={<User/>}/>
                         <Route index element={<div>Hello world</div>} />
                     </Route>
                 </Routes>
