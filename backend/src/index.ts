@@ -6,6 +6,7 @@ dotenv.config();
 
 import { createIO } from "./config/createIO";
 import connectDB from "./config/db";
+import { CustomError } from "./utils/error";
 
 // App setup
 const port = process.env.BACKEND_PORT || 3001;
@@ -45,19 +46,24 @@ app.use("/api/v1/temperature", temperatureRoute);
 app.use("/api/v1/humidity", humidityRoute);
 
 // Default error handler
-app.use(
-  (
-    err: Error & { status: number },
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) => {
-    console.error(err);
-    res.status(err.status || 500).json({
-      message: err.message || "Server is down! Please try again later!",
-    });
+app.use((err: unknown, req: Request, res: Response, next: NextFunction) => {
+  console.error(err);
+
+  if (res.headersSent) {
+    return next(err);
   }
-);
+
+  let newErr: CustomError;
+  if (!(err instanceof CustomError)) {
+    newErr = new CustomError();
+  } else {
+    newErr = err;
+  }
+
+  res.status(newErr.status).json({
+    message: newErr.message,
+  });
+});
 
 // Listening for requests
 httpServer.listen(port, () => {
