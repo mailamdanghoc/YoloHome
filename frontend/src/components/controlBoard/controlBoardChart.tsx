@@ -1,5 +1,5 @@
-import { ReactNode, useRef, useState } from "react";
-import useCheckMobile from "../../customizes/useCheckMobile";
+import { ReactElement, useRef, useState, memo } from "react";
+import { useLedUsageFetch } from "../../customizes/useLedFetch";
 import useDimensions from "../../customizes/useDimensions";
 import BarChart from "../BarChart";
 
@@ -27,16 +27,19 @@ const data2 = [
 const data3 = [{"name": "type1" , "value" : 100}] ;
 for (let i = 0 ; i < 29; i++) data3.push({"name" : ("rando").concat(i.toString()), "value":  i})
 
-
 interface data  {
     name: string,
     value: number
 } [];
 
-const ControlBoardChart = () => {
+// wrapping to avoid unnecessary re-render
+const ControlBoardChart =  memo((): ReactElement => {
     const containerRef = useRef(null); 
     const size = useDimensions(containerRef);
     const [DataSelector, setDataSelector] = useState<data []>(data1);
+    console.log("render control board chart");
+
+    const {data} = useLedUsageFetch();
 
 
     const handleChoiceChange = (event: React.ChangeEvent) => {
@@ -57,7 +60,7 @@ const ControlBoardChart = () => {
     return (
         <div className="h-full p-full rounded-xl p-2 block bg-white">
             <select className="w-1/5 md:w-[30%] h-[15%] md:h-[10%] rounded-lg float-right 
-            text-center bg-sky-100 font-semibold text-gray-500 text-xs md:text-lg"
+            text-center bg-white font-semibold text-gray-500 text-xs md:text-lg hover:bg-sky-100"
             onChange={(event) => {handleChoiceChange(event)}}>
                 <option value="Last 7 days">Last 7 days</option>
                 <option value="Last month">Last month</option>
@@ -70,6 +73,6 @@ const ControlBoardChart = () => {
             </div>
         </div>
     )
-}
+})
 
 export default ControlBoardChart;

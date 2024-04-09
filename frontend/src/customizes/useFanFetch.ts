@@ -12,10 +12,10 @@ const useFanFetch = () => {
     const fetcher = async (url: string) => {
         const res = await axios.get(url);
         console.log(res.data.data[0]);
-        return res.data.data[0];
+        return res.data.data;
     }
 
-    const {data, mutate, isValidating} = useSWR(fanNewest, fetcher,
+    const {data, mutate, isValidating, isLoading} = useSWR(fanNewest, fetcher,
         {
             keepPreviousData: true,
             refreshInterval: defaultRefreshInterval
@@ -34,7 +34,7 @@ const useFanFetch = () => {
         })
     });
 
-    return {data, trigger, isValidating};
+    return {data, trigger, isValidating, isLoading};
 };
 
 export default useFanFetch;

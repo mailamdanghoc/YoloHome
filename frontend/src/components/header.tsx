@@ -1,13 +1,14 @@
-import { ReactNode, useContext} from "react";
+import { ReactElement, useContext} from "react";
 import Logo from "./logo";
 import { titleContext } from "../customizes/context";
+import { Link } from "react-router-dom";
 
 interface HeaderProps {
     isMobile: boolean,
     handleNavbar: () => void
 }
 
-const Header = (props: HeaderProps): ReactNode => {
+const Header = (props: HeaderProps): ReactElement => {
     const title = useContext(titleContext);
     
     return (
@@ -25,8 +26,9 @@ const Header = (props: HeaderProps): ReactNode => {
                 </div>
                 <div className="w-1/3"></div>
                 <div className="w-1/3 h-full flex items-center justify-end">
-
-                    <div className="h-12 w-12 ml-3 mr-6 rounded-full bg-black"></div>
+                    <Link className="h-fit w-fit cursor-pointer" to="user">
+                        <div className="h-12 w-12 ml-3 mr-6 rounded-full bg-black"></div>
+                    </Link>
                 </div>
             </div>
         </>

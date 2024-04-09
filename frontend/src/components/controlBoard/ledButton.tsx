@@ -1,8 +1,8 @@
-import { ReactNode} from "react";
+import { ReactElement } from "react";
 import { BsBrightnessHigh, BsBrightnessHighFill } from "react-icons/bs";
 import { useLedFetch } from "../../customizes/useLedFetch";
 
-const LedButton = (): ReactNode => {
+const LedButton = (): ReactElement<any, any> => {
     const {data, trigger} = useLedFetch();
 
     return (

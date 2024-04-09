@@ -1,6 +1,8 @@
-import { ReactNode, useEffect } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import EnvCard from '../components/evironmentCard';
 import BarChart from '../components/BarChart';
+import useSocket from '../customizes/useSocket';
+import axios from 'axios';
 import { useOutletContext } from 'react-router-dom';
 
 const data1 = [
@@ -13,13 +15,33 @@ const data1 = [
     { "name": "7/3/3", "value": 8 },
 ]
 
-const Environment = (): ReactNode => {
+const Environment = (props: any): ReactNode => {
+    const [light, setLight] = useState(0);
+    const socket = useSocket;
+    const [graphData, setGraphData] = useState(data1);
     const handleSetTitle = useOutletContext<(title: string) => void>();
-    
+
+    useEffect(() => {
+        socket.on("light", (data: string) => {
+            setLight(Number(data));
+        });
+
+        // const intervalId = setInterval(() => {
+        //     axios.get('/')
+        //         .then(response => {
+        //             // Update your state here
+        //             setGraphData(prevData => [...prevData, { name: new Date().toLocaleDateString(), value: response.data }]);
+        //         })
+        //         .catch(error => {
+        //             console.error('There was an error!', error);
+        //         });
+        // }, 60000);
+    }, [socket]);
+      
     useEffect(() => {
         handleSetTitle("Environment")
     },[]);
-    
+
     return (
         <div className=" h-full w-full p-8" >
             <span className='text-2xl font-bold'>Live tempurature chart</span>
@@ -31,7 +53,7 @@ const Environment = (): ReactNode => {
             <span className='text-2xl font-bold'>Current environment information</span>
             <div className="mt-4 flex justify-around flex-wrap">
                 <EnvCard curVal={37} limit={40} name="Tempurature" color="#00b3a7" className="w-14" icon="temp"/>
-                <EnvCard curVal={30} limit={40} name="Light" color="#00b3a7" className="w-14" icon="light"/>
+                <EnvCard curVal={light} limit={40} name="Light" color="#00b3a7" className="w-14" icon="light"/>
                 {/* <EnvCard name="Humidity" color="#00b3a7" className="w-14" icon="humid"/> */}
             </div>
         </div>

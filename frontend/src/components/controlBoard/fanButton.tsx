@@ -1,8 +1,8 @@
-import { ReactNode} from "react";
+import { ReactElement } from "react";
 import { PiFan, PiFanFill } from "react-icons/pi";
 import useFanFetch from "../../customizes/useFanFetch";
 
-const FanButton = (): ReactNode => {
+const FanButton = (): ReactElement<any, any> | null => {
     const {data, trigger} = useFanFetch();
 
     const handleSetFanSpeed = (event: React.FormEvent): void => {
@@ -11,7 +11,7 @@ const FanButton = (): ReactNode => {
         trigger({speed: newSpeed.toString()});
     }
 
-    return (
+    return  (
         <div className="h-full w-full p-6 rounded-xl bg-white">
             <div className="h-1/4 w-full flex ites">
                 <PiFan size={35} className={`${(data ? data.speed / 30 : 0) != 0 ? "w-0" : "sm:w-fit w-0"} text-gray-300`} />
@@ -23,7 +23,7 @@ const FanButton = (): ReactNode => {
                     className="appearance-none bg-transparent h-1/2 w-full
                 [&::-webkit-slider-runnable-track]:rounded-full [&::-webkit-slider-runnable-track]:h-full [&::-webkit-slider-runnable-track]:bg-gray-700 
                 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-[100%] [&::-webkit-slider-thumb]:w-1/4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-gray-500"
-                    onChange={(event: React.FormEvent) => {handleSetFanSpeed(event);}}
+                    onChange={(event: React.FormEvent): void => {handleSetFanSpeed(event);}}
                     value={(data ? data.speed / 30 : 0).toString()}
                 />
             </div>
