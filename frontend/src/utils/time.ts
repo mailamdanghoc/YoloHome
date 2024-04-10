@@ -1,54 +1,75 @@
-/** Quick declaration for params
- */
+import {format, parse, eachDayOfInterval, eachMonthOfInterval} from "date-fns";
+import { chartData } from "../components/controlBoard/controlBoardChart";
 
-interface rollback {
-    day?: number,
-    month?: number,
-    year?: number
-}
+// When you read this, this code (read: piece of junk) hasn't been able to keep me fed
+// Meaning, been flushed out of my mind. So yeah, i forgot how it works.
+// 
+// Heavily depend on date-fns
 
-/** Function to get date format as YYYY-MM-DD 
- *  * Params: {day: number | undefined, month: number | undefined, year: number | undefined} | undefined 
- *  * Return: string (format date)
- * 
- *  Is currently being used as Strategy for function customGetTime
- */
+class timeUtils {
+    // Format needed for display. Other than that, just for syncing the function
+    private useFormat: string;
+    private useMonthFormat: string;
 
-const getDateFormatYMD = (rollback? : rollback): string => {
-    let timeShift: number = 0;
-    if(rollback) {
-        timeShift += rollback.day ? rollback.day * 24 * 60 * 60 * 1000 : 0;
-        timeShift += rollback.month ? rollback.month * 30 * 24 * 60 * 60 * 1000: 0;
-        timeShift += rollback.year ? rollback.year * 365 * 24 * 60 * 60 * 1000: 0;
+    public constructor() {
+        this.useFormat = "";
+        this.useMonthFormat = "";
     }
-    const d: Date = new Date(Date.now() - timeShift);
-    let month: string = '' + (d.getMonth() + 1),
-        day: string = '' + d.getDate(),
-        year: string ='' + d.getFullYear();
 
-    if (month.length < 2) 
-        month = '0' + month;
-    if (day.length < 2) 
-        day = '0' + day;
+    public setFormat = (newFormat: string): void => {
+        this.useFormat = newFormat;
+    }
 
-    return [year, month, day].join('-');
+    public setMonthFormat = (newFormat: string): void => {
+        this.useMonthFormat = newFormat;
+    }
+
+    /** Customized function to get day by now, 7 days ago, 1 month ago and 1 year ago
+     *  * Params: None
+     *  * Return: object {now: string, last7Days: string, lastMonth: string, lastYear: string}
+     */
+
+    public customGetTime = (): {
+        now: string,
+        last7Days: string,
+        lastMonth: string,
+        lastYear: string
+    } => {return {
+        now: format(new Date(), this.useFormat),
+        last7Days: format(Date.now() - 7 * 24 * 60 * 60 * 1000, this.useFormat),
+        lastMonth: format(Date.now() - 30 * 24 * 60 * 60 * 1000, this.useFormat),
+        lastYear: format(Date.now() - 365 * 24 * 60 * 60 * 1000, this.useFormat)
+    }}
+
+    /** Function use to fill empty date or month in an array of object with value 0
+     *  * Params:
+     *  - arr: any (array that need to be fill)
+     *  - startDate: string
+     *  - endDate: string
+     *  - type: "day" | "month"
+     * 
+     *  * Return: object []
+     */
+
+    public fillMissingArray = (arr: chartData [],  startDate: string, endDate: string, type: "day" | "month"): chartData [] => {
+        const interval: {start: Date, end: Date} = {
+            start:  parse(startDate, this.useFormat, new Date()),
+            end:  parse(endDate, this.useFormat, new Date())
+        };
+
+        const samplingArr: string [] = (type == "day" ? eachDayOfInterval(interval) : eachMonthOfInterval(interval))
+        .map((obj: Date) => format(obj, type == "day" ? this.useFormat : this.useMonthFormat)).splice(1);
+        
+        return samplingArr.map((date: string) => {
+            const obj: chartData | undefined = arr.find(obj => obj.time === date)
+            return obj ? obj : {sumValue: 0, time: date}
+        })
+    }
+
+    public reFormat = (obj: chartData[] , newFormat: string): chartData[] => {
+        return obj.map((ele: chartData): chartData =>  {return {sumValue: ele.sumValue, time: format(ele.time, newFormat)}});
+    }
+
 }
 
-/** Customized function to get day by now, 7 days ago, 1 month ago and 1 year ago
- *  * Params: function: type ({day: number | undefined, month: number | undefined, year: number | undefined} | undefined) => string
- *  * Return: object {now: string, last7Days: string, lastMonth: string, lastYear: string}
- */
-
-const customGetTime = (f:(rollback?: rollback) => string): {
-    now: string,
-    last7Days: string,
-    lastMonth: string,
-    lastYear: string
-} => {return {
-    now: f(),
-    last7Days: f({day: 7}),
-    lastMonth: f({month: 1}),
-    lastYear: f({year: 1})
-}}
-
-export {customGetTime, getDateFormatYMD};
+export const time = new timeUtils();
