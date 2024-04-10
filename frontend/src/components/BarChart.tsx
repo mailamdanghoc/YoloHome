@@ -1,5 +1,6 @@
 import * as d3 from "d3";
 import { useRef, useEffect, ReactElement } from "react";
+import { chartData } from "./controlBoard/controlBoardChart";
 
 /** Customize BarChart
  * 
@@ -35,10 +36,7 @@ interface BarChartProps {
         left?: number,
         right?: number,
     },
-    data: {
-        name: string,
-        value: number
-    }[]
+    data: chartData [] 
 }
 
 const BarChart = (props: BarChartProps): ReactElement => {
@@ -58,12 +56,12 @@ const BarChart = (props: BarChartProps): ReactElement => {
 
         // set up xScale
         const xScale = d3.scaleBand()
-            .domain(data.map((d) => d.name))
+            .domain(data.map((d) => d.time))
             .range([marginLeft, width - marginRight])
             .padding(0.1);
 
         //get max to set up yScale
-        const max = Math.max(...data.map(d => d.value));
+        const max = Math.max(...data.map(d => d.sumValue));
 
         //set up yScale
         const yScale = d3.scaleLinear()
@@ -78,7 +76,7 @@ const BarChart = (props: BarChartProps): ReactElement => {
                 .data(data)
                 .enter()
                 .append("rect")
-                    .attr("x", (d) => xScale(d.name)!)
+                    .attr("x", (d) => xScale(d.time)!)
                     .attr("y", (d) => yScale(0))
                     .attr("height", (d) => height - marginBottom - yScale(0))
                     .attr("width", (d) => xScale.bandwidth())
@@ -86,8 +84,8 @@ const BarChart = (props: BarChartProps): ReactElement => {
                     .attr("class", barColor ? barColor : "fill-gray-500")
                     .transition()
                     .duration(150)
-                    .attr("height", (d) => height - marginBottom - yScale(d.value))
-                    .attr("y", (d) => yScale(d.value));
+                    .attr("height", (d) => height - marginBottom - yScale(d.sumValue))
+                    .attr("y", (d) => yScale(d.sumValue));
 
             //attach xAxis
             svg.append("g")
