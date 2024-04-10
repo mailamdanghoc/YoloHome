@@ -1,61 +1,42 @@
-import { ReactElement, useRef, useState, memo } from "react";
+import { ReactElement, useRef, useState, memo, useCallback } from "react";
 import { useLedUsageFetch } from "../../customizes/useLedFetch";
+import { useFanUsageFetch } from "../../customizes/useFanFetch";
 import useDimensions from "../../customizes/useDimensions";
 import BarChart from "../BarChart";
+type chartData = {
+    time: string,
+    sumValue: number
+}
 
-const data1 = [
-    { "name": "1/3/2003", "value": 10 },
-    { "name": "2/3/3", "value": 12 },
-    { "name": "03/03", "value": 15 },
-    { "name": "4/3/3", "value": 19 },
-    { "name": "5/3/3", "value": 24 },
-    { "name": "6/3/3", "value": 13 },
-    { "name": "7/3/3", "value": 8 },
-]
-
-const data2 = [
-    {"name": "Jan", "value": 100},
-    {"name": "Jan2", "value": 1240},
-    {"name": "Jan3", "value": 150},
-    {"name": "Jan4", "value": 160},
-    {"name": "Jan5", "value": 130},
-    {"name": "Jan6", "value": 50},
-    {"name": "Jan7", "value": 300},
-    {"name": "Jan8", "value": 400},
-] 
-
-const data3 = [{"name": "type1" , "value" : 100}] ;
-for (let i = 0 ; i < 29; i++) data3.push({"name" : ("rando").concat(i.toString()), "value":  i})
-
-interface data  {
-    name: string,
-    value: number
-} [];
+interface props {
+    type: "fan" | "led"
+}
 
 // wrapping to avoid unnecessary re-render
-const ControlBoardChart =  memo((): ReactElement => {
+const ControlBoardChart =  memo((props: props): ReactElement => {
     const containerRef = useRef(null); 
     const size = useDimensions(containerRef);
-    const [DataSelector, setDataSelector] = useState<data []>(data1);
-    console.log("render control board chart");
+    const [DataSelector, setDataSelector] = useState<number>(0);
+    const {data} = props.type == "led" ? useLedUsageFetch() : useFanUsageFetch();
 
-    const {data} = useLedUsageFetch();
-
+    //if(!isLoading && data) setDataSelector(data[0]);
 
     const handleChoiceChange = (event: React.ChangeEvent) => {
         const value = (event.target as HTMLInputElement).value;
-        switch (value) {
-            case "Last month":
-                setDataSelector(data2)
-                break;
-            case "Last year":
-                setDataSelector(data3)
-                break;
-            default:
-                setDataSelector(data1)
-                break;
+        if(data) {
+            switch (value) {
+                case "Last month":
+                    setDataSelector(1)
+                    break;
+                case "Last year":
+                    setDataSelector(2)
+                    break;
+                default:
+                    setDataSelector(0)
+                    break;
+            }
         }
-    }
+    };
 
     return (
         <div className="h-full p-full rounded-xl p-2 block bg-white">
@@ -68,7 +49,7 @@ const ControlBoardChart =  memo((): ReactElement => {
             </select>
             <div className="w-full h-[85%] md:h-[90%] bg-white" ref={containerRef}>
                 <BarChart width={size.width} height={size.height} barColor="fill-sky-500" textStyle="text-sm font-semibold text-indigo-800"
-                margin={{top: 30, bottom: 30, right: 20, left: 20}} data={DataSelector}  
+                margin={{top: 30, bottom: 30, right: 20, left: 20}} data={data ? data[DataSelector] : []}  
                 />
             </div>
         </div>
@@ -76,3 +57,4 @@ const ControlBoardChart =  memo((): ReactElement => {
 })
 
 export default ControlBoardChart;
+export type {chartData};

@@ -1,8 +1,8 @@
 import axios from "axios";
-import { useCallback, useEffect, useState } from "react";
 import useSWR from "swr";
 import useSWRMutation from "swr/mutation";
-import {getDateFormatYMD, customGetTime} from "../utils/time";
+import {time} from "../utils/time";
+import { chartData } from "../components/controlBoard/controlBoardChart";
 
 // Server's route
 const ledOnUrl: string = "http://localhost:3001/api/v1/led/turnon";
@@ -10,23 +10,43 @@ const ledOffUrl: string = "http://localhost:3001/api/v1/led/turnoff";
 const ledNewest: string = "http://localhost:3001/api/v1/led/newest";
 const ledUsage: string = "http://localhost:3001/api/v1/led/usage";
 
-// Default refresh interval for useSWR to revalidate the data (resend request to backend)
-const defaultRefreshInterval: number = 1000;    //1 second
+// Default refresh interval for button (resend request to backend)
+const defaultButtonInterval: number = 1000;    //1 sec
+// Default refresh interval for chart
+const defaultChartInterval: number = 600000;   //10 mins
 
-// Fetch Data Functions
+// set up utility classes
+time.setFormat("yyyy-MM-dd");
+time.setMonthFormat("MMM");
+
+/** Custom hook to provide means to get and post led's data to server
+ *  Return: 
+ *  - data: a State that's the data returned by swr (in this case, led's status), revalidating (or updating) every defaultButtonInterval
+ *  - trigger: a function - manual way to send POST request to the server (as this should be done manually)
+ *  - isValidating: a State to know if data is in updating phase
+ */
 const useLedFetch = () => {
-    const lightButtonFetcher = async (url: string): Promise<any> => {
+    /** Support fetcher for swr
+     *  Return: a Promise
+     */
+    const ledButtonFetcher = async (url: string): Promise<any> => {
         const res = await axios.get(url);
         return res.data.data;
     };
 
-    const {data, mutate, isValidating} = useSWR(ledNewest, lightButtonFetcher,
+    /** Hook to get the data
+     */
+    const {data, mutate, isValidating} = useSWR(ledNewest, ledButtonFetcher,
         {
             keepPreviousData: true,
-            refreshInterval: defaultRefreshInterval
+            refreshInterval: defaultButtonInterval
         }
     );
 
+    /** Hook to post the data
+     *  After this hook finish posting, it'll fire a mutate signal to the Hook above to revalidate data for display
+     *  Optimistic UI: includes optimistic UI for improved UX. Still not completely solve race condition...
+     */
     const {trigger} = useSWRMutation((data?.status ? ledOffUrl : ledOnUrl),
         async (url: string) => {
             await axios.post(url).then(() => {
@@ -43,29 +63,70 @@ const useLedFetch = () => {
     return {data, trigger, isValidating};
 }
 
-const useLedUsageFetch = () => {
-    const time = customGetTime(getDateFormatYMD);
 
-    const ledFetcher = async (url: string, startDate: string, endDate: string) => {
-        const res = await axios.get(url, 
-            {params:{
+/** Custon hook to provide means to get led's chart data
+ *  * Return:
+ *  - data: a State, [] of chart data, sorted by last 7 days, last month and last year
+ * 
+ */
+const useLedUsageFetch = () => {
+    // get time
+    const {now, last7Days, lastMonth, lastYear} = time.customGetTime();
+
+    /** Fetcher for swr, using axios to request a GET from url?startDate=<string>endDate=<string>intervalType=<string>
+     *  * Params:
+     *  - url: string (pass from useSWR)
+     *  - startDate: string 
+     *  - endDate: string
+     *  - type: "day" | "month"
+     *  
+     *  * Return: {data: any} [];
+     *  
+     *  Utils class to format data (fill missing date in array, reformat date, see utils/time.ts)
+     */
+    const ledFetcher = async (url: string, startDate: string, endDate: string, type: "day" | "month"): Promise<chartData[]> => {
+        const res = await axios.get(url,
+            {params : {
                 startDate: startDate,
-                endDate: endDate
+                endDate: endDate,
+                intervalType: type
             }
-        })
-        console.log(res.data.data);
-        return 1
+        });
+        //fill missing data
+        const data: chartData [] = time.fillMissingArray(res.data.data, startDate, endDate, type);
+        return (type === "day") ? time.reFormat(data, "dd-MM") : data;
     }
 
-    const {data, mutate, isLoading} = useSWR(ledUsage, (url) => ledFetcher(url, time.now, time?.last7Days), 
-        {
-            keepPreviousData: true,
-            refreshInterval: 600000,
-            shouldRetryOnError: false
-        }
-    )
+    /** Fetcher wrapper for sending multiple request using above fetcher
+     *  * Params:
+     *  - key sent by swr { url: string
+     *                      args: {startDate, endDate, type} - arguments of the fetcher
+     *                      }
+     *  * Return: Promise []
+     */
+    const fetcherWrapper = (key: {url: string, args: {startDate: string, endDate: string, type: "day" | "month"} []}): Promise<chartData[][]> => {
+        return Promise.all(
+            key.args.map(
+                (arg) => ledFetcher(key.url, arg.startDate, arg.endDate, arg.type)
+            )
+        );
+    }
 
-    return {data, mutate, isLoading}
+    // list arguments
+    const args: {startDate: string, endDate: string, type: "day" | "month"} [] = [
+        {startDate: last7Days, endDate: now, type: "day"},
+        {startDate: lastMonth, endDate: now, type: "day"},
+        {startDate: lastYear, endDate: now, type: "month"}
+    ];
+
+    /** Hook to get data
+     */
+    const { data, isLoading, mutate } = useSWR({url: ledUsage, args: args}, fetcherWrapper, {
+        keepPreviousData: true,
+        refreshInterval: defaultChartInterval,
+    })
+
+    return {data, isLoading};
 }
 
 export {useLedFetch, useLedUsageFetch};

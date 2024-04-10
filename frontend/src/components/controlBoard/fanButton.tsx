@@ -1,6 +1,6 @@
 import { ReactElement } from "react";
 import { PiFan, PiFanFill } from "react-icons/pi";
-import useFanFetch from "../../customizes/useFanFetch";
+import { useFanFetch } from "../../customizes/useFanFetch";
 
 const FanButton = (): ReactElement<any, any> | null => {
     const {data, trigger} = useFanFetch();
