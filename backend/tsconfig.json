@@ -10,7 +10,8 @@
     "removeComments": true,
     "noEmitOnError": true,
     "noEmit": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "typeRoots": ["./src/types"]
   },
   "include": ["src/**/*"]
 }

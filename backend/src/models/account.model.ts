@@ -1,4 +1,4 @@
-import { Types, Schema, model } from "mongoose";
+import { Types, Schema, model, HydratedDocument } from "mongoose";
 
 export enum AccountType {
   ADMIN = "ADMIN",
@@ -18,40 +18,61 @@ interface Account {
   email?: string;
   fullname?: string;
   phone?: string;
-  adminID: Types.ObjectId;
+  adminId: Types.ObjectId;
 }
 
-const accountSchema = new Schema<Account>({
-  username: {
-    type: String,
-    required: true,
-  },
-  password: {
-    type: String,
-    required: true,
-  },
-  type: {
-    type: String,
-    required: true,
-  },
-  status: {
-    type: String,
-    required: true,
-  },
-  email: {
-    type: String,
-  },
-  fullname: {
-    type: String,
-  },
-  phone: {
-    type: String,
-  },
-  adminID: {
-    type: Schema.Types.ObjectId,
-    ref: "Account",
-    default: null,
-  },
-});
+export type AccountDocument = HydratedDocument<Account>;
 
-export default model<Account>("Account", accountSchema);
+const accountSchema = new Schema<Account>(
+  {
+    username: {
+      type: String,
+      required: true,
+      unique: true,
+      immutable: true,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
+    type: {
+      type: String,
+      required: true,
+      default: AccountType.SUB,
+    },
+    status: {
+      type: String,
+      required: true,
+      default: AccountStatus.ACTIVE,
+    },
+    email: {
+      type: String,
+      default: "",
+    },
+    fullname: {
+      type: String,
+      default: "",
+    },
+    phone: {
+      type: String,
+      default: "",
+    },
+    adminId: {
+      type: Schema.Types.ObjectId,
+      ref: "Account",
+      default: null,
+    },
+  },
+  {
+    toJSON: {
+      transform(doc, ret) {
+        ret.id = ret._id;
+        delete ret._id;
+        delete ret.password;
+        delete ret.__v;
+      },
+    },
+  }
+);
+
+export const AccountModel = model<Account>("Account", accountSchema);
