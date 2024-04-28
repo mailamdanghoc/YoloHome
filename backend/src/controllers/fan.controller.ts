@@ -142,6 +142,7 @@ export class FanController implements Subscriber {
           ? "Fan has been turned off successfully."
           : `Fan has been adjusted at speed ${speed} successfully.`,
     });
+    this.speed = speedInt;
   }
 
   async find(req: Request, res: Response, next: NextFunction) {

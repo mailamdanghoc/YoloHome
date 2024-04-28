@@ -34,4 +34,7 @@ const notificationSchema = new Schema<Notification>({
   },
 });
 
-export default model<Notification>("Notification", notificationSchema);
+export const NotificationModel = model<Notification>(
+  "Notification",
+  notificationSchema
+);
