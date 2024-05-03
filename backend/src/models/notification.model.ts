@@ -1,4 +1,4 @@
-import { Types, Schema, model } from "mongoose";
+import { Types, Schema, model, HydratedDocument } from "mongoose";
 
 export enum NotiType {
   LED_USAGE_EXCEED = "LED_USAGE_EXCEED",
@@ -14,6 +14,8 @@ interface Notification {
   account: Types.ObjectId;
   device: Types.ObjectId;
 }
+
+export type NotificationDocument = HydratedDocument<Notification>;
 
 const notificationSchema = new Schema<Notification>({
   message: {
@@ -34,7 +36,4 @@ const notificationSchema = new Schema<Notification>({
   },
 });
 
-export const NotificationModel = model<Notification>(
-  "Notification",
-  notificationSchema
-);
+export const NotificationModel = model<Notification>("Notification", notificationSchema);

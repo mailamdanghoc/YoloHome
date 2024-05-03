@@ -7,7 +7,7 @@ export enum ControlType {
 
 interface Record {
   timestamp: Date;
-  device: Types.ObjectId;
+  deviceId: Types.ObjectId;
 }
 
 interface TemperatureRecord extends Record {
@@ -43,7 +43,7 @@ const recordSchema = new Schema<Record>(
       required: true,
       immutable: true,
     },
-    device: {
+    deviceId: {
       type: Schema.Types.ObjectId,
       ref: "Device",
       // required: true,

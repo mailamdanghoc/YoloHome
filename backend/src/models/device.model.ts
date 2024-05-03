@@ -1,15 +1,16 @@
-import { Schema, model } from "mongoose";
+import { HydratedDocument, Schema, model } from "mongoose";
 
 interface Device {
   name: string;
   threshold: number;
 }
-
 interface TemperatureSensor extends Device {}
 interface HumiditySensor extends Device {}
 interface LightSensor extends Device {}
 interface Fan extends Device {}
 interface Led extends Device {}
+
+export type DeviceDocument = HydratedDocument<Device>;
 
 const deviceSchema = new Schema<Device>(
   {
