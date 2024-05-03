@@ -40,12 +40,13 @@ export class AccountController {
     }
 
     const payload = {
+      ...req.body,
       username: username,
       password: "user123",
       adminId: req.account.id,
     };
     const newAccount = await this.authService.create(payload);
-    res.json({ account: newAccount, defaultPassword: payload.password });
+    res.status(201).json({ account: newAccount, defaultPassword: payload.password });
   }
 
   async findAll(req: Request, res: Response, next: NextFunction) {

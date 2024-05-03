@@ -38,6 +38,7 @@ import lightRoute from "./routes/light.route";
 import temperatureRoute from "./routes/temperature.route";
 import humidityRoute from "./routes/humidity.route";
 import accountRoute from "./routes/account.route";
+import deviceRoute from "./routes/device.route";
 
 // Binding routes
 app.use("/api/v1/led", ledRoute);
@@ -46,6 +47,7 @@ app.use("/api/v1/light", lightRoute);
 app.use("/api/v1/temperature", temperatureRoute);
 app.use("/api/v1/humidity", humidityRoute);
 app.use("/api/v1/accounts", accountRoute);
+app.use("/api/v1/devices", deviceRoute);
 
 // Default error handler
 app.use((err: unknown, req: Request, res: Response, next: NextFunction) => {

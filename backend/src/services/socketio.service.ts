@@ -4,10 +4,7 @@ import { Server as HTTPServer } from "http";
 class SocketIOService {
   private static _io: IOServer;
 
-  public static getIO(
-    httpServer?: HTTPServer,
-    options: Partial<ServerOptions> = {}
-  ) {
+  public static getIO(httpServer?: HTTPServer, options: Partial<ServerOptions> = {}) {
     if (!SocketIOService._io) {
       if (httpServer === undefined) {
         throw new Error("Socket IO Server requires an http server!");

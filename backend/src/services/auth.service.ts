@@ -83,6 +83,11 @@ class AuthService {
     return account;
   }
 
+  async findAllEmails() {
+    const models = await AccountModel.find().select("email").exec();
+    return models.map(model => model.email);
+  }
+
   // Utility methods
   async hashPassword(password: string) {
     return await bcrypt.hash(password, this.saltRounds);

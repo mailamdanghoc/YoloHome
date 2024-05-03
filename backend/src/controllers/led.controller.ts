@@ -1,21 +1,26 @@
 import MQTTService from "../services/mqtt.service";
+import MailService, { MailType } from "../services/mail.service";
+import AuthService from "../services/auth.service";
 import Subscriber from "../utils/subscriber";
 import IContext from "../utils/context";
 import { CustomError } from "../utils/error";
 import { ADAFRUIT_IO_FEEDS } from "../config/adafruit";
 import { NextFunction, Request, Response } from "express";
 import { ControlType, LedRecordModel } from "../models/record.model";
+import { DeviceModel } from "../models/device.model";
 import { PipelineStage } from "mongoose";
 
 export class LedController implements Subscriber {
   readonly name = ADAFRUIT_IO_FEEDS + "led";
   private mqttService: MQTTService;
+  private mailService: MailService;
   private state: boolean;
 
   constructor() {
     this.mqttService = MQTTService.getInstance();
     this.mqttService.subscribe(this);
     this.mqttService.addTopic(this.name);
+    this.mailService = MailService.getInstance();
     this.getNewestDataPoint().then(data => {
       this.state = data?.status || false;
     });
@@ -41,8 +46,7 @@ export class LedController implements Subscriber {
         }
 
         newModel.totalTime =
-          (data.timestamp.getTime() - lastTurnOnData.timestamp.getTime()) /
-          1000;
+          (data.timestamp.getTime() - lastTurnOnData.timestamp.getTime()) / 1000;
         newModel.save();
       }
     });
@@ -79,8 +83,7 @@ export class LedController implements Subscriber {
       });
     }
 
-    const format =
-      typ === "day" ? "%Y-%m-%d" : typ === "month" ? "%Y-%m" : "%Y";
+    const format = typ === "day" ? "%Y-%m-%d" : typ === "month" ? "%Y-%m" : "%Y";
     pipeline.push(
       {
         $group: {
@@ -119,6 +122,16 @@ export class LedController implements Subscriber {
 
     this.mqttService.sendMessage(this.name, "1");
     res.json({ message: "LED has been turned on successfully." });
+
+    // Notify if exceed threshold
+    const device = await DeviceModel.findOne({ type: "Led" }).exec();
+    setTimeout(
+      async () => {
+        const emails: string[] = await AuthService.getInstance().findAllEmails();
+        this.mailService.sendEmail(emails, MailType.THRESHOLD_LED);
+      },
+      device.threshold * 60 * 60 * 1000
+    ); // threshold in hours
     this.state = true;
   }
 
@@ -153,9 +166,7 @@ export class LedController implements Subscriber {
       }
 
       const query = LedRecordModel.find(
-        startDate === undefined && endDate === undefined
-          ? {}
-          : { timestamp: dateOption }
+        startDate === undefined && endDate === undefined ? {} : { timestamp: dateOption }
       ).sort({
         timestamp: -1,
       });

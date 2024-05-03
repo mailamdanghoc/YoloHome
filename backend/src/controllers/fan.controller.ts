@@ -1,21 +1,26 @@
 import MQTTService from "../services/mqtt.service";
+import MailService, { MailType } from "../services/mail.service";
+import AuthService from "../services/auth.service";
 import Subscriber from "../utils/subscriber";
 import IContext from "../utils/context";
 import { CustomError } from "../utils/error";
 import { ADAFRUIT_IO_FEEDS } from "../config/adafruit";
 import { NextFunction, Request, Response } from "express";
 import { ControlType, FanRecordModel } from "../models/record.model";
+import { DeviceModel } from "../models/device.model";
 import { PipelineStage } from "mongoose";
 
 export class FanController implements Subscriber {
   readonly name = ADAFRUIT_IO_FEEDS + "fan";
   private mqttService: MQTTService;
+  private mailService: MailService;
   private speed: number;
 
   constructor() {
     this.mqttService = MQTTService.getInstance();
     this.mqttService.subscribe(this);
     this.mqttService.addTopic(this.name);
+    this.mailService = MailService.getInstance();
     this.getNewestDataPoint().then(data => {
       this.speed = data?.speed || 0;
     });
@@ -48,8 +53,7 @@ export class FanController implements Subscriber {
         const lastTurnOnData = await FanRecordModel.findOne(queryObject).exec();
 
         newModel.totalTime =
-          (data.timestamp.getTime() - lastTurnOnData.timestamp.getTime()) /
-          1000;
+          (data.timestamp.getTime() - lastTurnOnData.timestamp.getTime()) / 1000;
         newModel.save();
       }
     });
@@ -86,8 +90,7 @@ export class FanController implements Subscriber {
       });
     }
 
-    const format =
-      typ === "day" ? "%Y-%m-%d" : typ === "month" ? "%Y-%m" : "%Y";
+    const format = typ === "day" ? "%Y-%m-%d" : typ === "month" ? "%Y-%m" : "%Y";
     pipeline.push(
       {
         $group: {
@@ -119,7 +122,7 @@ export class FanController implements Subscriber {
   }
 
   // Handlers for API
-  control(req: Request, res: Response) {
+  async control(req: Request, res: Response) {
     const speed: string = req.body.speed;
     const speedInt = Number(speed);
 
@@ -142,6 +145,17 @@ export class FanController implements Subscriber {
           ? "Fan has been turned off successfully."
           : `Fan has been adjusted at speed ${speed} successfully.`,
     });
+
+    if (this.speed === 0) {
+      const device = await DeviceModel.findOne({ type: "Fan" }).exec();
+      setTimeout(
+        async () => {
+          const emails: string[] = await AuthService.getInstance().findAllEmails();
+          this.mailService.sendEmail(emails, MailType.THRESHOLD_FAN);
+        },
+        device.threshold * 60 * 60 * 1000
+      ); // threshold in hours
+    }
     this.speed = speedInt;
   }
 
@@ -166,9 +180,7 @@ export class FanController implements Subscriber {
       }
 
       const query = FanRecordModel.find(
-        startDate === undefined && endDate === undefined
-          ? {}
-          : { timestamp: dateOption }
+        startDate === undefined && endDate === undefined ? {} : { timestamp: dateOption }
       ).sort({
         timestamp: -1,
       });
