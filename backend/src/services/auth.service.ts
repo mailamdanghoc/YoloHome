@@ -6,7 +6,7 @@ import {
   AccountStatus,
   AccountType,
 } from "../models/account.model";
-import { CustomError } from "../utils/error";
+import CustomError from "../utils/error";
 import { Request, Response, NextFunction } from "express";
 
 interface TokenPayload {

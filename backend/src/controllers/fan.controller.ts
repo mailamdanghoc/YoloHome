@@ -3,7 +3,7 @@ import MailService, { MailType } from "../services/mail.service";
 import AuthService from "../services/auth.service";
 import Subscriber from "../utils/subscriber";
 import IContext from "../utils/context";
-import { CustomError } from "../utils/error";
+import CustomError from "../utils/error";
 import { ADAFRUIT_IO_FEEDS } from "../config/adafruit";
 import { NextFunction, Request, Response } from "express";
 import { ControlType, FanRecordModel } from "../models/record.model";

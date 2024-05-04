@@ -7,6 +7,7 @@ export enum MailType {
   THRESHOLD_HUMIDITY = "THRESHOLD_HUMIDITY",
   THRESHOLD_LED = "THRESHOLD_LED",
   THRESHOLD_FAN = "THRESHOLD_FAN",
+  THRESHOLD_DOOR = "THRESHOLD_DOOR",
 }
 
 export const MailMessage: Record<MailType, string> = {
@@ -15,6 +16,7 @@ export const MailMessage: Record<MailType, string> = {
   [MailType.THRESHOLD_HUMIDITY]: "The humidity level is currently over the threshold.",
   [MailType.THRESHOLD_LED]: "The LED usage is currently over the threshold.",
   [MailType.THRESHOLD_FAN]: "The fan is currently over the threshold.",
+  [MailType.THRESHOLD_DOOR]: "The door has been failed to opened more than 3 times.",
 };
 
 class MailService {

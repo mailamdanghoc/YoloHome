@@ -1,6 +1,6 @@
 import DeviceService from "../services/device.service";
+import CustomError from "../utils/error";
 import { Request, Response, NextFunction } from "express";
-import { CustomError } from "../utils/error";
 import { DeviceDocument } from "../models/device.model";
 
 export class DeviceController {
