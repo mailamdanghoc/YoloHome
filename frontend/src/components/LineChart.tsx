@@ -12,10 +12,7 @@ import { ReactNode } from 'react';
 ChartJs.register(LineElement, CategoryScale, LinearScale, PointElement);
 
 interface LineChartProps {
-    data: {
-        name: string,
-        value: number
-    }[]
+    data: Number[];
 }
 
 const options = {
@@ -28,7 +25,7 @@ const options = {
     },
     scales: {
         x: {
-            display: true,
+            display: false,
             title: {
                 display: true,
                 text: 'Month',
@@ -49,10 +46,10 @@ const LineChart = (data : LineChartProps): ReactNode => {
         <Line
             options={options}
             data={{
-                labels: data.data.map((data) => data.name),
+                labels: data.data.map((data, index) => index),
                 datasets: [{
                     label: 'Temperature',
-                    data: data.data.map((data) => data.value),
+                    data: data.data.map((data) => data),
                     fill: false,
                     borderColor: 'rgb(75, 192, 192)',
                     tension: 0.1
