@@ -9,4 +9,4 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
   //</React.StrictMode>,
 )
 
-document.getElementById('root')!.className = "h-screen";
+document.getElementById('root')!.className = "h-screen flex flex-col";

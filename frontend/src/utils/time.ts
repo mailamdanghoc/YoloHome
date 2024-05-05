@@ -1,9 +1,6 @@
 import {format, parse, eachDayOfInterval, eachMonthOfInterval} from "date-fns";
 import { chartData } from "../components/controlBoard/controlBoardChart";
-
-// When you read this, this code (read: piece of junk) hasn't been able to keep me fed
-// Meaning, been flushed out of my mind. So yeah, i forgot how it works.
-// 
+ 
 // Heavily depend on date-fns
 
 class timeUtils {
@@ -25,8 +22,6 @@ class timeUtils {
     }
 
     /** Customized function to get day by now, 7 days ago, 1 month ago and 1 year ago
-     *  * Params: None
-     *  * Return: object {now: string, last7Days: string, lastMonth: string, lastYear: string}
      */
 
     public customGetTime = (): {
@@ -42,13 +37,6 @@ class timeUtils {
     }}
 
     /** Function use to fill empty date or month in an array of object with value 0
-     *  * Params:
-     *  - arr: any (array that need to be fill)
-     *  - startDate: string
-     *  - endDate: string
-     *  - type: "day" | "month"
-     * 
-     *  * Return: object []
      */
 
     public fillMissingArray = (arr: chartData [],  startDate: string, endDate: string, type: "day" | "month"): chartData [] => {

@@ -7,7 +7,7 @@ import User from "./views/user.tsx";
 
 const App = () => {
     return (
-        <div className="h-screen w-full">
+        <div className="h-full w-full">
             <BrowserRouter>
                 <Routes>
                     <Route path="/signup" element={<div>Hello world from sign up</div>} />

@@ -20,14 +20,9 @@ time.setFormat("yyyy-MM-dd");
 time.setMonthFormat("MMM");
 
 /** Custom hook to provide means to get and post led's data to server
- *  Return: 
- *  - data: a State that's the data returned by swr (in this case, led's status), revalidating (or updating) every defaultButtonInterval
- *  - trigger: a function - manual way to send POST request to the server (as this should be done manually)
- *  - isValidating: a State to know if data is in updating phase
  */
 const useLedFetch = () => {
     /** Support fetcher for swr
-     *  Return: a Promise
      */
     const ledButtonFetcher = async (url: string): Promise<any> => {
         const res = await axios.get(url);
@@ -65,23 +60,12 @@ const useLedFetch = () => {
 
 
 /** Custon hook to provide means to get led's chart data
- *  * Return:
- *  - data: a State, [] of chart data, sorted by last 7 days, last month and last year
- * 
  */
 const useLedUsageFetch = () => {
     // get time
     const {now, last7Days, lastMonth, lastYear} = time.customGetTime();
 
     /** Fetcher for swr, using axios to request a GET from url?startDate=<string>endDate=<string>intervalType=<string>
-     *  * Params:
-     *  - url: string (pass from useSWR)
-     *  - startDate: string 
-     *  - endDate: string
-     *  - type: "day" | "month"
-     *  
-     *  * Return: {data: any} [];
-     *  
      *  Utils class to format data (fill missing date in array, reformat date, see utils/time.ts)
      */
     const ledFetcher = async (url: string, startDate: string, endDate: string, type: "day" | "month"): Promise<chartData[]> => {
@@ -97,12 +81,7 @@ const useLedUsageFetch = () => {
         return (type === "day") ? time.reFormat(data, "dd-MM") : data;
     }
 
-    /** Fetcher wrapper for sending multiple request using above fetcher
-     *  * Params:
-     *  - key sent by swr { url: string
-     *                      args: {startDate, endDate, type} - arguments of the fetcher
-     *                      }
-     *  * Return: Promise []
+    /** Fetcher wrapper for sending multiple requests using above fetcher by mapping urls
      */
     const fetcherWrapper = (key: {url: string, args: {startDate: string, endDate: string, type: "day" | "month"} []}): Promise<chartData[][]> => {
         return Promise.all(

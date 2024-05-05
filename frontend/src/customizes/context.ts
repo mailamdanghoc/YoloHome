@@ -1,3 +1,6 @@
 import { createContext } from "react";
 
-export const titleContext = createContext("Home");
+const titleContext = createContext("Home");
+const userContext = createContext<{userId: string, token: string}>({userId: "", token: ""});
+
+export {titleContext, userContext};
