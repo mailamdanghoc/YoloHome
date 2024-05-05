@@ -1,6 +1,6 @@
 import DeviceService from "../services/device.service";
+import CustomError from "../utils/error";
 import { Request, Response, NextFunction } from "express";
-import { CustomError } from "../utils/error";
 import { DeviceDocument } from "../models/device.model";
 
 export class DeviceController {
@@ -46,7 +46,7 @@ export class DeviceController {
   }
 
   async updateOne(req: Request, res: Response, next: NextFunction) {
-    const deviceId = req.params.id;
+    const deviceId = req.params.deviceId;
     const payload = req.body;
     try {
       const device = await this.deviceService.updateOne(deviceId, payload);
@@ -57,7 +57,7 @@ export class DeviceController {
   }
 
   async deleteOne(req: Request, res: Response, next: NextFunction) {
-    const deviceId = req.params.id;
+    const deviceId = req.params.deviceId;
     try {
       const device = await this.deviceService.deleteOne(deviceId);
       res.json(device);

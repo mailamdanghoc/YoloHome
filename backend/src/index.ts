@@ -4,9 +4,9 @@ import cors from "cors";
 import * as dotenv from "dotenv";
 dotenv.config();
 
-import { createIO } from "./config/createIO";
+import createIO from "./config/createIO";
 import connectDB from "./config/db";
-import { CustomError } from "./utils/error";
+import CustomError from "./utils/error";
 
 // App setup
 const port = process.env.BACKEND_PORT || 3001;
@@ -37,6 +37,7 @@ import fanRoute from "./routes/fan.route";
 import lightRoute from "./routes/light.route";
 import temperatureRoute from "./routes/temperature.route";
 import humidityRoute from "./routes/humidity.route";
+import doorRoute from "./routes/door.route";
 import accountRoute from "./routes/account.route";
 import deviceRoute from "./routes/device.route";
 
@@ -46,6 +47,7 @@ app.use("/api/v1/fan", fanRoute);
 app.use("/api/v1/light", lightRoute);
 app.use("/api/v1/temperature", temperatureRoute);
 app.use("/api/v1/humidity", humidityRoute);
+app.use("/api/v1/door", doorRoute);
 app.use("/api/v1/accounts", accountRoute);
 app.use("/api/v1/devices", deviceRoute);
 

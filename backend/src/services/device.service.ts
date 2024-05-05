@@ -1,5 +1,5 @@
 import { DeviceModel, DeviceDocument } from "../models/device.model";
-import { CustomError } from "../utils/error";
+import CustomError from "../utils/error";
 
 class DeviceService {
   private static instance: DeviceService;

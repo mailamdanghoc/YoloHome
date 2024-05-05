@@ -1,4 +1,4 @@
-import { Types, Schema, model } from "mongoose";
+import { Types, Schema, model, HydratedDocument } from "mongoose";
 
 export enum ControlType {
   MANUAL = "MANUAL",
@@ -34,6 +34,12 @@ interface LedRecord extends Record {
   description: string;
   totalTime?: number;
 }
+
+interface DoorRecord extends Record {
+  status: boolean;
+}
+
+export type RecordDocument = HydratedDocument<Record>;
 
 const recordSchema = new Schema<Record>(
   {
@@ -126,6 +132,16 @@ const LedRecordModel = RecordModel.discriminator<LedRecord>(
   })
 );
 
+const DoorRecordModel = RecordModel.discriminator<DoorRecord>(
+  "DoorRecord",
+  new Schema<DoorRecord>({
+    status: {
+      type: Boolean,
+      required: true,
+    },
+  })
+);
+
 export {
   RecordModel,
   TemperatureRecordModel,
@@ -133,4 +149,5 @@ export {
   LightRecordModel,
   FanRecordModel,
   LedRecordModel,
+  DoorRecordModel,
 };
