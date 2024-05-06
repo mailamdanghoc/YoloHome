@@ -1,3 +1,4 @@
+import { AccountStatus } from "../models/account.model";
 import AuthService from "../services/auth.service";
 import CustomError from "../utils/error";
 import { Request, Response, NextFunction } from "express";
@@ -17,6 +18,9 @@ export class AccountController {
         throw new CustomError("Username or password is missing", 400);
       }
       const account = await this.authService.findByUsername(username);
+      if (account.status === AccountStatus.INACTIVE) {
+        throw new CustomError("Forbidden! Account is inactive", 403);
+      }
       const token = await this.authService.createToken(username, password);
       res.json({ account: account, token: token });
     } catch (error) {
