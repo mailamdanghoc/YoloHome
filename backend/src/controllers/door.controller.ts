@@ -32,7 +32,7 @@ export class DoorController implements Subscriber {
     this.io.emit("door", context.payload);
 
     // Notify if exceed threshold
-    if (!context.payload) {
+    if (context.payload === "0") {
       this.failedAttempts++;
       if (this.willSendEmail && this.failedAttempts > 3) {
         const emails: string[] = await AuthService.getInstance().findAllEmails();

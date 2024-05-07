@@ -1,7 +1,7 @@
-import { AccountStatus } from "../models/account.model";
 import AuthService from "../services/auth.service";
 import CustomError from "../utils/error";
 import { Request, Response, NextFunction } from "express";
+import { AccountStatus } from "../models/account.model";
 
 export class AccountController {
   private authService: AuthService;
