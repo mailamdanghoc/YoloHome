@@ -39,10 +39,10 @@ const SignInForm = (): ReactElement => {
             const errResponse = error.response;
             switch (errResponse.status) {
                 case 404:
-                    setErrorMsg("User name or password is incorrect!");
+                    setErrorMsg("User name or password is incorrect or your account has been deactivated!");
                     break;
                 case 403:
-                    setErrorMsg("User name or password is incorrect!");
+                    setErrorMsg("User name or password is incorrect or your account has been deactivated!");
                     break;
                 case 400:
                     if (errResponse.data.message == "Username or password is missing") setErrorMsg("Both fields are required!");
