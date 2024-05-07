@@ -1,4 +1,4 @@
-import { ReactElement, useRef, useState, memo, useCallback } from "react";
+import { ReactElement, useRef, useState, memo} from "react";
 import { useLedUsageFetch } from "../../customizes/useLedFetch";
 import { useFanUsageFetch } from "../../customizes/useFanFetch";
 import useDimensions from "../../customizes/useDimensions";

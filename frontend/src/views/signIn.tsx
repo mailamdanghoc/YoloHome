@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 import useCheckMobile from "../customizes/useCheckMobile";
 import Logo from "../components/logo";
-import SignInForm from "../components/signInForm";
+import SignInForm from "../components/user/signInForm";
 
 const SignIn = (): ReactNode => {
     const isMobile = useCheckMobile();
