@@ -2,12 +2,19 @@ import { useState, useCallback, ReactElement, ChangeEvent, useContext } from "re
 import { MdModeEdit, MdOutlinePhone, MdOutlineEmail,  } from "react-icons/md";
 import { FaUserAlt, FaLock } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
-import { useUserFetch } from "../../customizes/useUserFetch";
 import formError from "../../utils/formError";
-import { userContext } from "../../customizes/context";
+import { useNavigate } from "react-router-dom";
+import { TriggerWithArgs } from "swr/mutation";
 
 
-const UserPanel = (): ReactElement<any, any> => {
+interface userProps {
+    data: any,
+    editTrigger: TriggerWithArgs<void, any, any, any>,
+    passwordTrigger: TriggerWithArgs<void, any, any, any>,
+    pError: any
+}
+
+const UserPanel = (props: userProps): ReactElement => {
     const [action, setAction] = useState<string>("infoShow");
     const [name, setName] = useState<string>("");
     const [email, setEmail] = useState<string>("");
@@ -23,10 +30,9 @@ const UserPanel = (): ReactElement<any, any> => {
                                                             .addError("matchPassword", ["Password does not match the confirmation password", "match", "New password is required"]) //match is not error
                                                             .addError("currentPassword", ["Current password does not match", "match"])
                                                         );
+    const navigate = useNavigate();                                                    
 
-    const {userId, token} = useContext(userContext);
-
-    const {data, mutate, editTrigger, error, passwordTrigger, passwordError: pError} = useUserFetch({userId: userId, token: token}) 
+    const {data, editTrigger, passwordTrigger, pError} = props;
 
     const resetState = useCallback((): void => {
         setName("");
@@ -146,6 +152,12 @@ const UserPanel = (): ReactElement<any, any> => {
         }   
     }, [oldPassword, password, passwordError])
 
+    const handleLogOut = useCallback(() => {
+        localStorage.setItem("token", "");
+        localStorage.setItem("userId", "");
+        navigate("/signin");
+    }, [])
+
     return (
         <div className="h-fit w-full px-3 py-6 ">
             <div className="flex flex-col md:flex-row">
@@ -187,6 +199,12 @@ const UserPanel = (): ReactElement<any, any> => {
                             <div className="w-20 ml-6 text-lg font-semibold text-gray-500">Contact:</div>
                             <div className="flex-1 text-lg truncate">{data ? data.phone : ""}</div>
                         </div>
+                        <div className= "flex justify-start my-3">
+                            <button className="h-fit w-fit p-2 ml-3 rounded-lg bg-gray-300 text-lg font-semibold text-gray-500 focus:outline-gray-500"
+                            onClick={() => {handleLogOut()}}>
+                                Log out
+                            </button>
+                        </div>
                     </div> 
                     <div className={`h-fit w-full p-3 bg-white ${action == "infoEdit" ? "block" : "hidden"}`}>
                         <div className="w-full my-3 px-6">
@@ -226,7 +244,7 @@ const UserPanel = (): ReactElement<any, any> => {
                             <span>{editError.toString(editError.currentExist() ? editError.currentExist()! : "")}</span>
                         </div>
                         <div className= "flex justify-start">
-                            <button className="h-fit w-fit p-2 ml-6 rounded-lg bg-gradient-to-br from-sky-500 to-cyan-300 text-lg font-semibold text-white focus:outline-gray-500"
+                            <button className="h-fit w-fit p-2 ml-6 rounded-lg bg-gradient-to-br from-sky-500 to-cyan-300 text-lg font-semibold text-white focus:outline-sky-500"
                             onClick={() => {handleEditOnSubmit()}}>
                                 Confirm
                             </button>
@@ -271,7 +289,7 @@ const UserPanel = (): ReactElement<any, any> => {
                             <span>{passwordError.toString(passwordError.currentExist() ? passwordError.currentExist()! : "")}</span>
                         </div>
                         <div className= "flex justify-start">
-                            <button className="h-fit w-fit p-2 ml-6 rounded-lg bg-gradient-to-br from-sky-500 to-cyan-300 text-lg font-semibold text-white focus:outline-gray-500"
+                            <button className="h-fit w-fit p-2 ml-6 rounded-lg bg-gradient-to-br from-sky-500 to-cyan-300 text-lg font-semibold text-white focus:outline-sky-500"
                             onClick={() => {handlePasswordOnSubmit()}} >
                                 Confirm
                             </button>

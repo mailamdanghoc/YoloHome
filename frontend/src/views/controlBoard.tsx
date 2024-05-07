@@ -7,9 +7,7 @@ import { useOutletContext } from "react-router-dom";
 const ControlBoard = (): ReactElement => {
     const handleSetTitle = useOutletContext<(title: string) => void>();
 
-    console.log("render");
     useEffect(() => {
-        console.log(">>> run use effect control board")
         handleSetTitle("My Devices")
     },[]);
 
@@ -17,10 +15,10 @@ const ControlBoard = (): ReactElement => {
         <div className=" h-full w-full p-3 border-l overscroll-auto border-gray-300" >
             <div className="h-full md:h-2/3 w-full flex flex-col md:flex-row">
                 <div className="h-1/2 w-full md:h-full md:w-1/2 p-3">
-                    <ControlBoardChart/>
+                    <ControlBoardChart type="led"/>
                 </div>
                 <div className="h-1/2 w-full md:h-full md:w-1/2 p-3">
-                    <ControlBoardChart/>
+                    <ControlBoardChart type="fan"/>
                 </div>
             </div>
             <div className="h-1/3 w-full flex">

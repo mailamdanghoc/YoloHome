@@ -40,13 +40,16 @@ const ControlBoardChart =  memo((props: props): ReactElement => {
 
     return (
         <div className="h-full p-full rounded-xl p-2 block bg-white">
-            <select className="w-1/5 md:w-[30%] h-[15%] md:h-[10%] rounded-lg float-right 
-            text-center bg-white font-semibold text-gray-500 text-xs md:text-lg hover:bg-sky-100"
-            onChange={(event) => {handleChoiceChange(event)}}>
-                <option value="Last 7 days">Last 7 days</option>
-                <option value="Last month">Last month</option>
-                <option value="Last year">Last year</option>
-            </select>
+            <div className="flex justify-between"> 
+                <div className="text-gray-500 text-xl font-semibold">{props.type == "led" ? "Led's Total Using Time" : "Fan's Total Using Time"}</div>
+                <select className="w-1/5 md:w-[30%] h-[15%] md:h-[10%] rounded-lg float-right 
+                text-center bg-white font-semibold text-gray-500 text-xs md:text-lg hover:bg-sky-100"
+                onChange={(event) => {handleChoiceChange(event)}}>
+                    <option value="Last 7 days">Last 7 days</option>
+                    <option value="Last month">Last month</option>
+                    <option value="Last year">Last year</option>
+                </select>
+            </div>
             <div className="w-full h-[85%] md:h-[90%] bg-white" ref={containerRef}>
                 <BarChart width={size.width} height={size.height} barColor="fill-sky-500" textStyle="text-sm font-semibold text-indigo-800"
                 margin={{top: 30, bottom: 30, right: 20, left: 20}} data={data ? data[DataSelector] : []}  

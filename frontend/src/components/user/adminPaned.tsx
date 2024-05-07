@@ -1,16 +1,21 @@
-import { ReactElement, useState, useCallback, useContext } from "react";
+import { ReactElement, useState, useCallback } from "react";
 import { FaPlus, FaPowerOff, FaTrashAlt } from "react-icons/fa";
 import SignUpPopup from "./signUpPopup";
-import { useAdminFetch } from "../../customizes/useAdminFetch";
-import { userContext } from "../../customizes/context";
-import { mutate } from "swr";
+import { KeyedMutator } from "swr";
+import { TriggerWithArgs } from "swr/mutation";
 
-const AdminPanel = (): ReactElement => {
+interface adminProps {
+    data: any,
+    mutate: KeyedMutator<any>,
+    createTrigger: TriggerWithArgs<void, any, any, any>,
+    updateTrigger: TriggerWithArgs<void, any, any, any>,
+    deleteTrigger: TriggerWithArgs<void, any, any, any>
+}
+
+const AdminPanel = (props : adminProps): ReactElement => {
     const [isPopupOpen, setPopupOpen] = useState<boolean>(false);
 
-    const {token} = useContext(userContext);
-
-    const {data, mutate, createTrigger, updateTrigger, deleteTrigger, error, isLoading} = useAdminFetch(token);
+    const {data, mutate, createTrigger, updateTrigger, deleteTrigger} = props;
 
     const handlePopupOpen = useCallback(() => {
         setPopupOpen(!isPopupOpen);

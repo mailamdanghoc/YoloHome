@@ -1,6 +1,6 @@
 import { Outlet, redirect, useNavigate } from "react-router-dom";
-import Navbar from "../components/navbar";
-import Header from "../components/header";
+import Navbar from "../components/header/navbar";
+import Header from "../components/header/header";
 import { ReactNode, useState, useEffect, createContext } from "react";
 import useCheckMobile from "../customizes/useCheckMobile";
 import { useUserFetch } from "../customizes/useUserFetch";
