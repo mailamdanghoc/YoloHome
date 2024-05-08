@@ -1,20 +1,18 @@
 # Yolo:Home
 
-> [!WARNING]
-> This project is under development
-
 Welcome to Yolo:Home.
 
 ## Overview
 
-Yolo:Home is a smart home service. It manages the conditions of the house environment such as temperature, humidity, lighting, etc. It also allows you to control your household devices like lights and fans.
+Yolo:Home is a smart home service that interact with IoT devices to collect data. It manages the conditions of the house environment such as temperature, humidity, lighting, etc. It also allows you to control your household devices like lights and fans. Members of your family can access and monitor the house together. When there is a problem, each member will receive an email notification so that everyone can be aware of the situation of the house.
 
 ## Technology Stack
 
+- Language: TypeScript.
 - Front-end: ReactJS, Tailwind CSS.
 - Back-end: NodeJS, ExpressJS.
 - Database: MongoDB.
-- Additional Technologies: MQTT protocol
+- Additional Technologies: MQTT protocol, JWT, Nodemailer, Socket.io, Chart.js...
 
 ## Installation
 
@@ -22,7 +20,7 @@ To use the application, you can follow the following steps:
 
 ### Clone the repository
 
-Open a terminal at a directory of your choice and enter these commands (change the folder name if you want to):
+Open a terminal and enter these commands (change the folder name if you want to):
 
 ```bash
   git clone https://github.com/quancao2310/YoloHome.git
@@ -42,14 +40,12 @@ Next, you will have to install all the dependencies of our project. Let's go to 
   npm i
 ```
 
-Then, go to the "frontend" directory and do the similar thing:
+Then, go to the "frontend" directory and do the same thing:
 
 ```bash
   cd frontend
   npm i
 ```
-
-You have installed all the dependencies.
 
 ### Set up a database server
 
@@ -61,28 +57,13 @@ The application also needs a MongoDB server. Install one or use the Atlas servic
 
 #### Backend Environment
 
-Create a file named **.env** at the top of the "backend" directory. Add the following environment variables:
-
-```bash
-# Backend information
-BACKEND_PORT=3001
-
-# Database information
-DB_URI=# Your database URI
-
-# Adafruit.IO Services
-ADAFRUIT_IO_USERNAME=# Your Adafruit.IO username
-ADAFRUIT_IO_KEY=# Your Adafruit.IO key
-
-# Frontend information
-FRONTEND_URL=http://localhost:3000
-```
+Create a file named **.env** at the top of the "backend" directory. Add the environment variables similar to one provided in **.env.example** (you need to change the values of those variables).
 
 You are ready now. Let's start the application.
 
 ### Run the application
 
-Start two terminal instances in the **YoloHome** directory. For the first instance, run these commands:
+Start two terminal instances in the **YoloHome** directory. For the first one, run these commands:
 
 ```bash
   cd backend
@@ -96,7 +77,7 @@ For the second one, run these commands:
   npm run dev
 ```
 
-The application should be starting. The ReactJS application will run on http://localhost:3000 and the Express application will run on http://localhost:3001.
+The application should be starting. The ReactJS application will be running on http://localhost:3000 and the Express application will be running on http://localhost:3001.
 
 You are now ready to explore our application!
 
