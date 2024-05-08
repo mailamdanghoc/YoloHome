@@ -20,7 +20,6 @@ const Layout = (): ReactNode => {
   }
 
   const handleSetTitle = (newTitle: string): void => {
-    console.log(">>> set new title: ", newTitle);
     setTitle(newTitle);
   }
 

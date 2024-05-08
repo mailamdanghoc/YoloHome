@@ -16,7 +16,7 @@ const defaultChartInterval: number = 600000;    //10 mins
 
 // set up utility classes
 time.setFormat("yyyy-MM-dd");
-time.setMonthFormat("MMM");
+time.setMonthFormat("yyyy-MM");
 
 /** Custom hook to provide means to get and post fan's data to server
  *  Return: 
@@ -88,7 +88,7 @@ const useFanUsageFetch = () => {
         });
         //fill missing data
         const data: chartData [] = time.fillMissingArray(res.data.data, startDate, endDate, type);
-        return (type === "day") ? time.reFormat(data, "dd-MM") : data;
+        return (type === "day") ? time.reFormat(data, "dd-MM") : time.reFormat(data, "MMM");
     }
     
     /** Fetcher wrapper for sending multiple request using above fetcher

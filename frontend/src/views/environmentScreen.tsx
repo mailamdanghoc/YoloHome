@@ -51,7 +51,6 @@ const Environment = (props: any): ReactNode => {
 
         socket.on("temperature", (data: string) => {
             temperature = Number(data);
-            console.log(temperature);
         });
 
         const intervalId = setInterval(() => {
