@@ -62,6 +62,7 @@ export class LedController implements Subscriber {
     endDate?: Date,
     typ: "day" | "month" | "year" = "day"
   ) {
+    endDate.setDate(endDate.getDate() + 1);
     const pipeline: PipelineStage[] = [];
 
     const dateOption = {};

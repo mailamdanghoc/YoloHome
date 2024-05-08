@@ -30,7 +30,7 @@ class timeUtils {
         lastMonth: string,
         lastYear: string
     } => {return {
-        now: format(new Date(), this.useFormat),
+        now: format(Date.now(), this.useFormat),
         last7Days: format(Date.now() - 7 * 24 * 60 * 60 * 1000, this.useFormat),
         lastMonth: format(Date.now() - 30 * 24 * 60 * 60 * 1000, this.useFormat),
         lastYear: format(Date.now() - 365 * 24 * 60 * 60 * 1000, this.useFormat)
@@ -48,14 +48,14 @@ class timeUtils {
         const samplingArr: string [] = (type == "day" ? eachDayOfInterval(interval) : eachMonthOfInterval(interval))
         .map((obj: Date) => format(obj, type == "day" ? this.useFormat : this.useMonthFormat)).splice(1);
         
-        return samplingArr.map((date: string) => {
-            const obj: chartData | undefined = arr.find(obj => obj.time === date)
+        return  samplingArr.map((date: string) => {
+            const obj: chartData | undefined = arr.find(obj => obj.time == date)
             return obj ? obj : {sumValue: 0, time: date}
         })
     }
 
     public reFormat = (obj: chartData[] , newFormat: string): chartData[] => {
-        return obj.map((ele: chartData): chartData =>  {return {sumValue: ele.sumValue, time: format(ele.time, newFormat)}});
+        return obj.map((ele: chartData): chartData =>  {return {sumValue: ele.sumValue / 3600, time: format(ele.time, newFormat)}});
     }
 
 }
